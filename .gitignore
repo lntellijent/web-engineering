@@ -141,3 +141,26 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+.env.*.local
+
+# --- Build output (je nach Tool) ---
+dist/
+build/
+out/
