@@ -1,36 +1,47 @@
 :root {
-    --primary: #3498db;
-    --secondary: #2ecc71;
-    --background: #f5f5f5;
-    --text: #333;
+  --primary: #3498db;
+  --secondary: #2ecc71;
+  --background: #f5f5f5;
+  --text: #333;
 }
 
+.awnserbox {
+  width: 300px;
+  height: 75px;
+  margin: 30px;
+  background-color: darkblue;
+  color: white;
+  text-align: center;
+  border 
+}
+
+.awnserbox:hover {
+  background-color: lightblue;
+}
 
 h1 {
-    color: var(--primary);
-    text-align: center;
-    font-size: xxx-large;
+  color: var(--primary);
+  text-align: center;
+  font-size: xxx-large;
 }
 
 #loginform {
-    margin-top: 0em;
-    text-align: center;
-
-
+  margin-top: 0em;
+  text-align: center;
 }
 
 button {
-    border: none;
-    text-align: center;
-    width: 10em;
-    height: 5em;
-    color: var(--secondary);
-    border-radius: 1em;
+  border: none;
+  text-align: center;
+  width: 10em;
+  height: 5em;
+  color: var(--secondary);
+  border-radius: 1em;
 }
 
 #boxbox {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
