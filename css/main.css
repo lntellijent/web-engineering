@@ -1,0 +1,35 @@
+@import "color.css";
+
+* {
+    color: var(--text);
+    background-color: var(--background);
+}
+
+h1 {
+    color: var(--primary);
+    text-align: center;
+    font-size: xxx-large;
+}
+
+button {
+    border: var(--border);
+    text-align: center;
+    width: 10em;
+    height: 5em;
+    color: var(--text-accent);
+    background-color: var(--accent);
+    border-radius: 1em;
+}
+
+button:hover {
+    color: var(--text);
+    background-color: var(--secondary);
+}
+
+#boxbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+}
