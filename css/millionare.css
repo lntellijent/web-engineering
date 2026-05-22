@@ -1,0 +1,13 @@
+.awnserbox {
+    width: 300px;
+    height: 75px;
+    margin: 30px;
+    background-color: darkblue;
+    color: white;
+    text-align: center;
+    border: 8px;
+}
+
+.awnserbox:hover {
+    background-color: lightblue;
+}
