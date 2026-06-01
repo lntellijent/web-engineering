@@ -3,19 +3,20 @@
   <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../css/main.css">
-    <title>Login</title>
+    <title>Start</title>
   </head>
   <body id="boxbox">
     <div> <!-- Wichtig für alignment; Sonst erscheinen Elemente seitlich nebeneinander anstelle von untereinander -->
       <h1>Wer wird Mathemann?</h1>
       <form id="loginform">
         <label for="username">Wie heißt du?</label>
-        <input id="username" required max="20" placeholder="Albert Einstein" type="text" />
+        <input id="username" max="20" placeholder="Albert Einstein" type="text" />
         <p>Spielmodi</p>
 
         <section id="buttons">
           <button>Üben</button>
-          <button>Mathe Millionär</button>
+          <button formaction="millionare.html">Mathe Millionär</button>
+          <button formaction="zehneruebergang.html">Zehnerübergang</button>
         </section>
       </form>
     </div>
