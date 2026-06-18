@@ -46,35 +46,49 @@ function clear(div) { // Leert das übergebene div
 }
 
 function createTask(negativeEnabled) {
-    const operation = 0; // getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
+    const operation = 1; // getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
     let leftOperand, rightOperand, result // Variablen für die linke und rechte Zahl, sowie das Ergebnis
     switch (operation) {
+        // #ToDo "Hard Mode" Bei denen nicht (0,100), sondern (-100, 100) betrachtet wird
         case 0: // +
             leftOperand = getRandomIntInclusive(1, 89)
             /*
             Linke Nummer:
-            Minimum 1, da 0 + a = a (hinfällig)
+            Minimum 1, Addition mit 0 ist hier trivial
             Maximum 89, da es die letzte Zahl ist, die einen Zehnerübergang haben kann
              */
-            const minimumRightValue = 10 - (leftOperand % 10);
+            const minimumRightValueAdd = 11 - (leftOperand % 10);
             /*
             Um einen Zehnerübergang zu erzeugen, müssen die Einerstellen beider Zahlen mindestens auf 10 addieren.
-            Das wird durch das Subtrahieren der Einerstelle von 10 erreicht.
+            Das wird durch das Subtrahieren der Einerstelle von 10+1 (+1 wegen größer) erreicht.
              */
-            rightOperand = getRandomIntInclusive(1 + minimumRightValue, 100 - leftOperand)
+            rightOperand = getRandomIntInclusive(minimumRightValueAdd, 100 - leftOperand)
             /*
             Rechte Nummer:
             Minimum oben berechnet
             Maximum sollte 100 nicht überschreiten, die maximale Zahl, die auf die Linke addiert werden darf,
              ist also die Subtraktion der linken Zahl von 100.
              */
-            result = leftOperand + rightOperand
+            result = leftOperand + rightOperand // Berechnung des Ergebnisses zur Überprüfung
             break;
         case 1: // -
-            // #ToDo Überarbeiten der Logik, sodass immer ein Zehnerübergang stattfindet und es einstellbar ist, ob das Ergebnis negativ werden kann oder nicht.
-            leftOperand = getRandomIntInclusive(10, 100) // create the left number
-            rightOperand = getRandomIntInclusive(10, 100 - leftOperand) // create the right number - limit it to 100
-            result = leftOperand - rightOperand
+            leftOperand = getRandomIntInclusive(10, 100)
+            /*
+            linke Nummer:
+            Minimum 10, da sonst kein Zehnerübergang stattfinden kann
+            Maximum 100, da subtrahiert und nicht addiert wird
+             */
+            const minimumRightValueSub = (leftOperand % 10) + 1;
+            /*
+            Um einen Zehnerübergang zu erzeugen, muss das rechte Argument größer als die Einerstelle des linken Arguments sein.
+             */
+            rightOperand = getRandomIntInclusive(minimumRightValueSub, leftOperand - 1)
+            /*
+            rechte Nummer:
+            Minimum 1, Subtraktion mit 0 ist hier trivial
+            Maximum linke Nummer minus 1: Subtraktion von sich selbst ist hier trivial, Subtraktion mit größerem rechten Argument wird negativ
+             */
+            result = leftOperand - rightOperand // Berechnung des Ergebnisses zur Überprüfung
             break;
     }
 
