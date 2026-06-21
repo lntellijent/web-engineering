@@ -2,9 +2,11 @@
 const delay = (ms) => new Promise(
     resolve => setTimeout(resolve, ms)
 );
-const popupdelay = 3000 // in Millisekunden
+const popupdelayshort = 6000 // in Millisekunden
+const popupdelaylong = 60000 // in Millisekunden
 
 let generatedTask;
+let popupvisible;
 newTask(); // Befüllung von "generatedTask"
 
 const subtn = document.querySelector("#subtn"); // "Submit"-Button
@@ -17,21 +19,49 @@ subtn.addEventListener("click", async event => {
         if (input === generatedTask.missing) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
             newTask(); // Aufgabe erfolgreich gelöst - neue Aufgabe erstellen
             helpcorrect.innerHTML = "Korrekt!" // Ausgabe im DOM
-            await popuphelpcorrect(popupdelay);
+            await popuphelpcorrect(popupdelayshort);
         } else  if(isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
             helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
-            await popuphelpcorrect(popupdelay);
-        } else { // Input ist eine Nummer,
-            helpcorrect.innerHTML = "Inkorrekt! Versuche erneut." // Statusausgabe
-            await popuphelpcorrect(popupdelay);
-            // #ToDo Hilfestellung
+            await popuphelpcorrect(popupdelayshort);
+        } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
+            help();
+            await popuphelpcorrect(popupdelaylong);
         }
     }
 })
 
+function help() {
+    helpcorrect.innerHTML = `Inkorrekt! Versuche erneut.<br>` // Statusausgabe
+    console.log(generatedTask.operation)
+    switch (generatedTask.operation) {
+        case '+': // +
+            if (generatedTask.leftOperand % 10 === 0) {
+                helpcorrect.innerHTML += `Hilfestellung:<br><br>
+                Linkes Argument: ${generatedTask.leftOperand}<br>
+                Rechtes Argument aufteilen: ${generatedTask.rightOperand}=${generatedTask.rightOperand-generatedTask.rightOperand%10}+${generatedTask.rightOperand%10}<br>
+                Nacheinander addieren: ${generatedTask.leftOperand}+${generatedTask.rightOperand-generatedTask.rightOperand%10}+${generatedTask.rightOperand%10}`
+            } else {
+                helpcorrect.innerHTML += `Hilfestellung:<br><br>
+                Linkes Argument: ${generatedTask.leftOperand}<br>
+                Vorbereitung / 10 aufteilen: 10=${10-(generatedTask.leftOperand%10)}+${generatedTask.leftOperand%10}<br>
+                Linkes Argument zum nächsten Zehner auffüllen: ${generatedTask.leftOperand}+${10-(generatedTask.leftOperand%10)}=${generatedTask.leftOperand+(10-(generatedTask.leftOperand%10))}<br>
+                Vorbereitung / rechtes Argument ausgleichen: ${generatedTask.rightOperand}-${10-generatedTask.leftOperand%10}=${generatedTask.rightOperand-(10-generatedTask.leftOperand%10)}<br>
+                Addieren: ${generatedTask.leftOperand+(10-(generatedTask.leftOperand%10))}+${generatedTask.rightOperand-(10-generatedTask.leftOperand%10)}=?`
+            }
+            break;
+        case '-': // -
+            // #ToDo entsprechende Hilfestellungen auch für Subtraktion implementieren
+            helpcorrect.innerHTML += `Hilfestellung: ${generatedTask.leftOperand}`
+            break;
+    }
+}
+
 async function popuphelpcorrect(ms) {
-    helpcorrect.classList.toggle("hidden"); // Hinweis wird sichtbar
+    if(popupvisible !== true)
+        helpcorrect.classList.toggle("hidden"); // Hinweis wird sichtbar
+    popupvisible = true
     await delay(ms); // Dauer, für die der Hinweis zu sehen ist
+    popupvisible = false
     helpcorrect.classList.toggle("hidden"); // Hinweis wird versteckt
 }
 
@@ -46,7 +76,7 @@ function clear(div) { // Leert das übergebene div
 }
 
 function createTask(negativeEnabled) {
-    const operation = 1; // getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
+    const operation = 0; // getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
     let leftOperand, rightOperand, result // Variablen für die linke und rechte Zahl, sowie das Ergebnis
     switch (operation) {
         // #ToDo "Hard Mode" Bei denen nicht (0,100), sondern (-100, 100) betrachtet wird
