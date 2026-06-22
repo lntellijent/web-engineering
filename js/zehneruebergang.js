@@ -31,27 +31,22 @@ subtn.addEventListener("click", async event => {
 })
 
 function help() {
-    helpcorrect.innerHTML = `Inkorrekt! Versuche erneut.<br>` // Statusausgabe
-    console.log(generatedTask.operation)
+    helpcorrect.innerHTML = `Inkorrekt! Versuche erneut.<br>Hilfestellung:<br><br>` // Statusausgabe
+
+    const w = (generatedTask.leftOperand - (generatedTask.leftOperand%10)) / 10
+    const x = generatedTask.leftOperand%10
+    const y = (generatedTask.rightOperand - (generatedTask.rightOperand%10)) / 10
+    const z = generatedTask.rightOperand%10
+    const positiveCarry = 10-x
+
     switch (generatedTask.operation) {
-        case '+': // +
-            if (generatedTask.leftOperand % 10 === 0) {
-                helpcorrect.innerHTML += `Hilfestellung:<br><br>
-                Linkes Argument: ${generatedTask.leftOperand}<br>
-                Rechtes Argument aufteilen: ${generatedTask.rightOperand}=${generatedTask.rightOperand-generatedTask.rightOperand%10}+${generatedTask.rightOperand%10}<br>
-                Nacheinander addieren: ${generatedTask.leftOperand}+${generatedTask.rightOperand-generatedTask.rightOperand%10}+${generatedTask.rightOperand%10}`
-            } else {
-                helpcorrect.innerHTML += `Hilfestellung:<br><br>
-                Linkes Argument: ${generatedTask.leftOperand}<br>
-                Vorbereitung / 10 aufteilen: 10=${10-(generatedTask.leftOperand%10)}+${generatedTask.leftOperand%10}<br>
-                Linkes Argument zum nächsten Zehner auffüllen: ${generatedTask.leftOperand}+${10-(generatedTask.leftOperand%10)}=${generatedTask.leftOperand+(10-(generatedTask.leftOperand%10))}<br>
-                Vorbereitung / rechtes Argument ausgleichen: ${generatedTask.rightOperand}-${10-generatedTask.leftOperand%10}=${generatedTask.rightOperand-(10-generatedTask.leftOperand%10)}<br>
-                Addieren: ${generatedTask.leftOperand+(10-(generatedTask.leftOperand%10))}+${generatedTask.rightOperand-(10-generatedTask.leftOperand%10)}=?`
-            }
+        case '+':
+            helpcorrect.innerHTML += `Zehnerstelle: ${w}+${y}=${w+y} &rarr; ${(w+y)*10}<br>`
+            helpcorrect.innerHTML += `Auffüllen: ${x}+${positiveCarry}=10 &rarr; ${z}-${positiveCarry}=${z-positiveCarry}<br>`
+            helpcorrect.innerHTML += `Addieren: ${(w+y)*10}+10+${z-positiveCarry}=?`
             break;
-        case '-': // -
+        case '-':
             // #ToDo entsprechende Hilfestellungen auch für Subtraktion implementieren
-            helpcorrect.innerHTML += `Hilfestellung: ${generatedTask.leftOperand}`
             break;
     }
 }
@@ -138,6 +133,9 @@ function createTask(negativeEnabled) {
             result = "?" // Wert wird mit einem Platzhalter besetzt
             break;
     }
+
+    leftOperand = 35
+    rightOperand = 28
 
     return {
         leftOperand: leftOperand,
