@@ -2,8 +2,8 @@
 const delay = (ms) => new Promise(
     resolve => setTimeout(resolve, ms)
 );
-const popupdelayshort = 6000 // in Millisekunden
-const popupdelaylong = 60000 // in Millisekunden
+const popupdelayshort = 3000 // in Millisekunden
+const popupdelaylong = 10000 // in Millisekunden
 
 let generatedTask;
 let popupvisible;
@@ -72,31 +72,22 @@ function clear(div) { // Leert das übergebene div
 
 function createTask(negativeEnabled) {
     const operation = 0; // getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
-    let leftOperand, rightOperand, result // Variablen für die linke und rechte Zahl, sowie das Ergebnis
+    let w, x, y, z; // Variablen für die linke und rechte Zahl, sowie das Ergebnis
+    let leftOperand, rightOperand, result;
     switch (operation) {
         // #ToDo "Hard Mode" Bei denen nicht (0,100), sondern (-100, 100) betrachtet wird
         case 0: // +
-            leftOperand = getRandomIntInclusive(1, 89)
-            /*
-            Linke Nummer:
-            Minimum 1, Addition mit 0 ist hier trivial
-            Maximum 89, da es die letzte Zahl ist, die einen Zehnerübergang haben kann
-             */
-            const minimumRightValueAdd = 11 - (leftOperand % 10);
-            /*
-            Um einen Zehnerübergang zu erzeugen, müssen die Einerstellen beider Zahlen mindestens auf 10 addieren.
-            Das wird durch das Subtrahieren der Einerstelle von 10+1 (+1 wegen größer) erreicht.
-             */
-            rightOperand = getRandomIntInclusive(minimumRightValueAdd, 100 - leftOperand)
-            /*
-            Rechte Nummer:
-            Minimum oben berechnet
-            Maximum sollte 100 nicht überschreiten, die maximale Zahl, die auf die Linke addiert werden darf,
-             ist also die Subtraktion der linken Zahl von 100.
-             */
+            w = getRandomIntInclusive(0,8);
+            x = getRandomIntInclusive(1,9);
+            y = getRandomIntInclusive(0,8-w);
+            z = getRandomIntInclusive(10-x,9);
+
+            leftOperand = w*10+x;
+            rightOperand = y*10+z;
             result = leftOperand + rightOperand // Berechnung des Ergebnisses zur Überprüfung
             break;
         case 1: // -
+            // #ToDo Überarbeitung wie bei Addition
             leftOperand = getRandomIntInclusive(10, 100)
             /*
             linke Nummer:
@@ -133,9 +124,6 @@ function createTask(negativeEnabled) {
             result = "?" // Wert wird mit einem Platzhalter besetzt
             break;
     }
-
-    leftOperand = 35
-    rightOperand = 28
 
     return {
         leftOperand: leftOperand,
