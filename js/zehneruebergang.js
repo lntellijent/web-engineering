@@ -2,8 +2,8 @@
 const delay = (ms) => new Promise(
     resolve => setTimeout(resolve, ms)
 );
-const popupdelayshort = 3000 // in Millisekunden
-const popupdelaylong = 10000 // in Millisekunden
+const popupdelayshort = 6000 // in Millisekunden
+const popupdelaylong = 60000 // in Millisekunden
 
 let generatedTask;
 let popupvisible;
@@ -46,7 +46,9 @@ function help() {
             helpcorrect.innerHTML += `Addieren: ${(w+y)*10}+10+${z-positiveCarry}=?`
             break;
         case '-':
-            // #ToDo entsprechende Hilfestellungen auch für Subtraktion implementieren
+            helpcorrect.innerHTML += `Zehnerstelle: ${w}-${y}=${w-y} &rarr; ${(w-y)*10}<br>`
+            helpcorrect.innerHTML += `10 Borgen: ${(w-y)*10}-10=${(w-y-1)*10}, 10+${x}=${x+10}&rarr; ${x+10}-${z}=${x-z+10}<br>`
+            helpcorrect.innerHTML += `Subtrahieren: ${(w-y-1)*10}+${x-z+10}=?`
             break;
     }
 }
@@ -70,8 +72,8 @@ function clear(div) { // Leert das übergebene div
     list.innerHTML = ""; // Inhalt des divs bearbeiten
 }
 
-function createTask(negativeEnabled) {
-    const operation = 0; // getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
+function createTask() {
+    const operation = 1; // getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
     let w, x, y, z; // Variablen für die linke und rechte Zahl, sowie das Ergebnis
     let leftOperand, rightOperand, result;
     switch (operation) {
@@ -87,24 +89,14 @@ function createTask(negativeEnabled) {
             result = leftOperand + rightOperand // Berechnung des Ergebnisses zur Überprüfung
             break;
         case 1: // -
-            // #ToDo Überarbeitung wie bei Addition
-            leftOperand = getRandomIntInclusive(10, 100)
-            /*
-            linke Nummer:
-            Minimum 10, da sonst kein Zehnerübergang stattfinden kann
-            Maximum 100, da subtrahiert und nicht addiert wird
-             */
-            const minimumRightValueSub = (leftOperand % 10) + 1;
-            /*
-            Um einen Zehnerübergang zu erzeugen, muss das rechte Argument größer als die Einerstelle des linken Arguments sein.
-             */
-            rightOperand = getRandomIntInclusive(minimumRightValueSub, leftOperand - 1)
-            /*
-            rechte Nummer:
-            Minimum 1, Subtraktion mit 0 ist hier trivial
-            Maximum linke Nummer minus 1: Subtraktion von sich selbst ist hier trivial, Subtraktion mit größerem rechten Argument wird negativ
-             */
-            result = leftOperand - rightOperand // Berechnung des Ergebnisses zur Überprüfung
+            w = getRandomIntInclusive(1,9);
+            x = getRandomIntInclusive(0,8);
+            y = getRandomIntInclusive(0,w-1);
+            z = getRandomIntInclusive(x+1,9);
+
+            leftOperand = w*10+x;
+            rightOperand = y*10+z;
+            result = leftOperand + rightOperand // Berechnung des Ergebnisses zur Überprüfung
             break;
     }
 
