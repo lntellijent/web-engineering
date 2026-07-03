@@ -1,13 +1,3 @@
-
-const delay = (ms) => new Promise(
-    resolve => setTimeout(resolve, ms)
-); // Methode zur kontrollierten Programmverzögerung, analog zu Thread.sleep() in Java
-
-/*
-Wertekonstanten
- */
-const popupdelayshort = 6000 // in Millisekunden
-const popupdelaylong = 60000 // in Millisekunden
 const streakVisibleAfterXCorrect = 5;
 
 /*
@@ -31,17 +21,17 @@ subtn.addEventListener("click", async event => {
     if (typeof input === "number") { // Der Input muss vom Typ Number sein
         if (input === generatedTask.missing) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
             newTask(); // Aufgabe erfolgreich gelöst - neue Aufgabe erstellen
-            if (++streak > streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
+            if (++streak >= streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
                 helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
             else
                 helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
-            await popuphelpcorrect(popupdelayshort); // popup für festgelegte Zeiten anzeigen
+            show(); // popup anzeigen
         } else if(isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
             helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
-            await popuphelpcorrect(popupdelayshort); // popup für festgelegte Zeiten anzeigen
+            show(); // popup anzeigen
         } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
             help(); // Hilfestellung
-            await popuphelpcorrect(popupdelaylong); // popup für festgelegte Zeiten anzeigen
+            show(); // popup anzeigen
             streak = 0; // Streak zurücksetzen, da die Antwort inkorrekt ist.
         }
     }
@@ -85,17 +75,21 @@ function help() {
 }
 
 /**
- * Zeigt für eine bestimmte Zeit lang das popupfeld im DOM
- * @param ms Wartet x Millisekunden
- * @returns {Promise<void>}
+ * Zeigt das popupfeld im DOM
  */
-async function popuphelpcorrect(ms) {
+function show() {
     if(popupvisible !== true)
         helpcorrect.classList.toggle("hidden"); // Hinweis wird sichtbar
     popupvisible = true
-    await delay(ms); // Dauer, für die der Hinweis zu sehen ist
+}
+
+/**
+ * Versteckt das popupfeld im DOM
+ */
+function hide() {
+    if(popupvisible === true)
+        helpcorrect.classList.toggle("hidden"); // Hinweis wird unsichtbar
     popupvisible = false
-    helpcorrect.classList.toggle("hidden"); // Hinweis wird versteckt
 }
 
 /**

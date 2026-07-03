@@ -1,5 +1,54 @@
 @import "color.css";
 
+. {
+    color: var(--text);
+    background: var(--background);
+}
+
 .hidden {
     display: none;
+}
+
+#zehneruebergang {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 50vh;
+
+    color: var(--text);
+}
+
+#task {
+    display: flex;
+
+    background: var(--primary);
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    border-radius: 1em;
+}
+
+#task div {
+    display: flex;
+    margin: 1em;
+
+    background: var(--secondary);
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    border-radius: 1em;
+    height: 100px;
+    width: 100px;
+}
+
+#subtn {
+    margin: 2em;
 }
