@@ -1,17 +1,36 @@
+@import "color.css";
+
+* {
+    color: var(--text);
+    background-color: var(--background);
+}
+
+h1 {
+    color: var(--primary);
+    text-align: center;
+    font-size: xx-large;
+}
+
 body {
     width: 90%;
     margin: auto;
 }
 
 #frage {
-    width: 80%;
+    width: 60%;
     margin: 2rem auto;
+    text-align: center;
+    font-size: x-large;
+    background-color: var(--primary);
+    border-width: thick;
+    border-color: var(--accent);
+    border-style: solid;
+    border-radius: 18px;
 }
 
 .awnserboxes {
     width: 80%;
     margin: auto;
-
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -103,15 +122,6 @@ body {
     margin: 0;
     color: white;
 }
-
-.gameover-buttons button {
-    padding: 12px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
 
 .gameover-buttons button {
     padding: 12px 20px;

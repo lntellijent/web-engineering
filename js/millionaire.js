@@ -2,8 +2,8 @@ console.log("JS wurde geladen");
 let timer = 0.0;
 let interval;
 let timeRemaining = 9990000;
-
-
+let stage = 0;
+let correctAwnser;
 
 const gewinne = [
     "0 €",
@@ -24,18 +24,6 @@ const gewinne = [
     "1.000.000 €"
 ];
 
-const questions = [
-    "Das ist Frage 1",
-    "Das ist Frage 2",
-    "Das ist Frage 3",
-    "Das ist Frage 4",
-    "Das ist Frage 5",
-    "Das ist Frage 6",
-    "Das ist Frage 7",
-    "Das ist Frage 8",
-    "Das ist Frage 9",
-    "Das ist Frage 10",
-];
 /*-----------Allgemeine Funktionen----------*/
 
 function getRandomNumber(min, max) {
@@ -44,10 +32,180 @@ function getRandomNumber(min, max) {
 
 /*-----------spezifische Funktionen----------*/
 
-function loadQuestion() {
-    question = questions[getRandomNumber(0,questions.length - 1)];
-    document.querySelector("#frage").textContent = question; 
+
+function AdditionTask(max) {
+    let num1 = Math.floor(Math.random() * (max + 1));
+    let num2 = Math.floor(Math.random() * (max - num1 + 1));
+    let solution = num1 + num2;
+
+    return [num1, num2, num1 + num2];
 }
+
+function SubtractionTask(max) {
+    let num1 = getRandomNumber(1, max);
+    let num2 = getRandomNumber(0, num1);
+
+    return [num1, num2, num1 - num2];
+}
+
+function MultiplicationTask() {
+    let num1 = getRandomNumber(1, 10);
+    let num2 = getRandomNumber(1, 10);
+
+    return [num1, num2, num1 * num2];
+}
+
+function DivisionTask() {
+    let num2 = getRandomNumber(1, 10);
+    let solution = getRandomNumber(1, 10);
+    let num1 = num2 * solution;
+
+    return [num1, num2, solution];
+}
+
+function masterTask() {
+    let num1 = getRandomNumber(1, 5);
+    let num2 = getRandomNumber(1,5);
+    let num3 = getRandomNumber(2,10);
+    
+    return [num1, num2, num3, (num1 + num2) * num3]
+}
+
+function fillAwnsers(right) {
+    let awk = getRandomNumber(1,4);
+    if (awk == 1) {
+        document.querySelector("#awnserbox1").innerText = right;
+    }
+    else {
+        document.querySelector("#awnserbox1").innerText = Math.abs(getRandomNumber(1 , 20) + right);
+    }
+    if (awk == 2) {
+        document.querySelector("#awnserbox2").innerText = right;
+    }
+    else {
+        document.querySelector("#awnserbox2").innerText = Math.abs(getRandomNumber(1 , 20) + right);
+    }
+    if (awk == 3) {
+        document.querySelector("#awnserbox3").innerText = right;
+    }
+    else {
+        document.querySelector("#awnserbox3").innerText = Math.abs(getRandomNumber(1 , 20) + right);
+    }
+    if (awk == 4) {
+        document.querySelector("#awnserbox4").innerText = right;
+    }
+    else {
+        document.querySelector("#awnserbox4").innerText = Math.abs(getRandomNumber(1 , 20) - right);
+    }
+}
+
+function checkButton1() {
+    let answer1 = document.querySelector("#awnserbox1").innerText;
+
+    if (Number(answer1) === correctAwnser) {
+        updateStage();
+    } else {
+        gameOver();
+    }
+}
+function checkButton2() {
+    let answer2 = document.querySelector("#awnserbox2").innerText;
+
+    if (Number(answer2) === correctAwnser) {
+        updateStage();
+    } else {
+        gameOver();
+    }
+}
+function checkButton3() {
+    let answer3 = document.querySelector("#awnserbox3").innerText;
+
+    if (Number(answer3) === correctAwnser) {
+        updateStage();
+    } else {
+        gameOver();
+    }
+}
+function checkButton4() {
+    let answer4 = document.querySelector("#awnserbox4").innerText;
+
+    if (Number(answer4) === correctAwnser) {
+        updateStage();
+    } else {
+        gameOver();
+    }
+}
+
+function generateQuestion(stage) {
+    let selector = getRandomNumber(1,2)
+    if (stage <= 2) {
+        if (selector === 1) {
+            let task = AdditionTask(20);
+            document.querySelector("#frage").innerText = task[0] + "+" + task[1] + " = ?";
+            fillAwnsers(task[2]);
+            correctAwnser = task[2];
+        }
+        if (selector === 2) {
+            let task = SubtractionTask(20);
+            document.querySelector("#frage").innerText = task[0] + "-" + task[1] + " = ?";
+            fillAwnsers(task[2])
+            correctAwnser = task[2];
+        }
+    }
+    else if (stage <= 5) {
+        if (selector === 1) {
+            let task = AdditionTask(100);
+            document.querySelector("#frage").innerText = task[0] + "+" + task[1] + " = ?";
+            fillAwnsers(task[2]);
+            correctAwnser = task[2];
+        }
+        if (selector === 2) {
+            let task = SubtractionTask(100);
+            document.querySelector("#frage").innerText = task[0] + "-" + task[1] + " = ?";
+            fillAwnsers(task[2])
+            correctAwnser = task[2];
+        }
+    }
+    else if (stage <= 10) {
+        if (selector === 1) {
+            let task = MultiplicationTask();
+            document.querySelector("#frage").innerText = task[0] + "*" + task[1] + " = ?";
+            fillAwnsers(task[2]);
+            correctAwnser = task[2];
+        }
+        if (selector === 2) {
+            let task = DivisionTask();
+            document.querySelector("#frage").innerText = task[0] + ":" + task[1] + " = ?";
+            fillAwnsers(task[2])
+            correctAwnser = task[2];
+        }
+    }
+    else if (stage === 11) {
+        let task = masterTask();
+        document.querySelector("#frage").innerText = task[0] + "+" + task[1] + "*" + task[2] + " = ?";
+        fillAwnsers(task[3])
+    }
+}
+
+
+function updateStage() {
+    if (stage <= 10) {
+        stage += 1;
+        generateQuestion(stage)
+    }
+    else {
+        winGame()
+    }
+}
+
+function winGame() {
+    /*Win Game div einblenden*/
+}
+
+function startRound() {
+    generateQuestion(0);
+} 
+
 
 function startTicker() {
     clearInterval(interval)
@@ -75,10 +233,11 @@ function gameOver() {
 }
 
 function startGame() {
+    stage = 0;
     timeRemaining = 4000000;
     hide("#gameoverScreen");
-    startTicker()
-    loadQuestion();
+    startTicker();
+    startRound();
 }
 
 function hide(identifier) {
