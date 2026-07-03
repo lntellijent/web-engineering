@@ -20,7 +20,7 @@ const helpcorrect = document.querySelector("#helpcorrectfield"); // Feld für Hi
 /*
 Globale Arbeitsvariablen
  */
-let popupvisible; // Interne Variable, die anzeigt ob das popup sichtbar ist oder nicht.
+let popupvisible; // Interne Variable, die anzeigt, ob das popup sichtbar ist oder nicht.
 let streak = 0; // Zähler der hintereinander korrekt gelösten Aufgaben
 let generatedTask; // Enthält die zu berechnende Aufgabe
 
@@ -46,6 +46,16 @@ subtn.addEventListener("click", async event => {
         }
     }
 })
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") { // Submit on Enter
+        subtn.click(); // Button wird virtuell gedrückt
+    }
+});
+
+document.addEventListener("click", () => {
+    txt.focus(); // Fokussierung des Textfensters, sobald geklickt wird, um es immer im Fokus zu halten
+});
 
 /**
  * Zeigt eine passende Hilfestellung zur derzeitigen Aufgabe an
@@ -168,6 +178,7 @@ function createTask() {
  */
 function newTask() {
     generatedTask = createTask(false); // Erstellung der neuen Aufgabe
+    txt.value = "";
 
     /*
     Entfernen des Inhalts der Gleichung
@@ -186,6 +197,8 @@ function newTask() {
     manipulate("#rightOperand", generatedTask.rightOperand);
     manipulate("#relation", generatedTask.relation);
     manipulate("#result", generatedTask.result);
+
+    console.log(generatedTask);
 }
 
 /**
