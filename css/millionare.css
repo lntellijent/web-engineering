@@ -22,9 +22,7 @@ body {
     text-align: center;
     font-size: x-large;
     background-color: var(--primary);
-    border-width: thick;
-    border-color: var(--accent);
-    border-style: solid;
+    border: 3px solid var(--accent);
     border-radius: 18px;
 }
 
@@ -38,11 +36,13 @@ body {
 
 .awnserbox {
     padding: 1rem;
-    background-color: darkblue;
-    border: 2px solid white;
+    background-color: var(--primary);
+    border: 3px solid var(--accent);
     border-radius: 10px;
+    text-align: center;
+    font-size: large;
 }
-
+ 
 @media (max-width: 600px) {
     .awnserboxes {
         grid-template-columns: 1fr;
@@ -77,13 +77,10 @@ body {
 }
 
 #timer {
-    width: 150px;
-    height: 150px;
     text-align:center;
-
-    border-radius: 50%;
-
-    border: 3px solid rgb(239, 44, 44);
+    font-size: xxx-large;
+    font-weight: bolder;
+    color: var(--text);
 }
 
 .right-panel table {
@@ -99,6 +96,10 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+#moneyfield {
+    color: red;
 }
 
 /*---------------Game Over Screen----------*/

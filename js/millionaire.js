@@ -5,29 +5,16 @@ let timeRemaining = 9990000;
 let stage = 0;
 let correctAwnser;
 
-const gewinne = [
-    "0 €",
-    "50 €",
-    "100 €",
-    "200 €",
-    "500 €",
-    "1.000 €",
-    "2.000 €",
-    "4.000 €",
-    "8.000 €",
-    "16.000 €",
-    "32.000 €",
-    "64.000 €",
-    "125.000 €",
-    "250.000 €",
-    "500.000 €",
-    "1.000.000 €"
-];
+
 
 /*-----------Allgemeine Funktionen----------*/
 
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max-min+1) + min);
+}
+
+function getRandomBoolean(percent) {
+    return Math.random() < percent;
 }
 
 /*-----------spezifische Funktionen----------*/
@@ -68,11 +55,14 @@ function masterTask() {
     let num2 = getRandomNumber(1,5);
     let num3 = getRandomNumber(2,10);
     
-    return [num1, num2, num3, (num1 + num2) * num3]
+    return [num1, num2, num3, num1 + num2 * num3]
 }
+
+let correctButton = 0;
 
 function fillAwnsers(right) {
     let awk = getRandomNumber(1,4);
+    correctButton = awk; /*für den 50:50 joker */
     if (awk == 1) {
         document.querySelector("#awnserbox1").innerText = right;
     }
@@ -97,6 +87,32 @@ function fillAwnsers(right) {
     else {
         document.querySelector("#awnserbox4").innerText = Math.abs(getRandomNumber(1 , 20) - right);
     }
+}
+
+function jokerCall() {
+    // Richtige Antwort gelb
+    document.querySelector("#awnserbox" + correctButton).style.backgroundColor = "yellow";
+}
+
+function jokerFifty() {
+    //hier fehlt noch booleans ob der joker schon verbraucht ist
+    // Zufälligen zweiten Button wählen
+    let secondButton;
+    secondButton = getRandomNumber(1,4);
+    if (secondButton === correctButton) {
+        if (secondButton === 4) {
+            secondButton -= 1;
+        }
+        else if (secondButton === 1) {
+            secondButton += 1;
+        }
+    }
+    
+    // Richtige Antwort gelb
+    document.querySelector("#awnserbox" + correctButton).style.backgroundColor = "yellow";
+
+    // SecondButton auch gelb
+    document.querySelector("#awnserbox" + secondButton).style.backgroundColor = "yellow";
 }
 
 function checkButton1() {
@@ -136,7 +152,14 @@ function checkButton4() {
     }
 }
 
+
+
 function generateQuestion(stage) {
+    //Jegliche markierung der Boxen entfernen die durch die Joker entstehen
+    for (let i = 1; i <= 4; i++) {
+        document.querySelector("#awnserbox" + i).style.backgroundColor = "";
+    }
+
     let selector = getRandomNumber(1,2)
     if (stage <= 2) {
         if (selector === 1) {
@@ -187,11 +210,31 @@ function generateQuestion(stage) {
     }
 }
 
+const moneystage = [
+    "0 €",
+    "50 €",
+    "100 €",
+    "200 €",
+    "500 €",
+    "1.000 €",
+    "2.000 €",
+    "4.000 €",
+    "16.000 €",
+    "64.000 €",
+    "500.000 €",
+    "1.000.000 €"
+];
+
+function updateMoney(stage) {
+    document.querySelector("#moneyfield").textContent = moneystage[stage -1];
+}
+
 
 function updateStage() {
     if (stage <= 10) {
         stage += 1;
         generateQuestion(stage)
+        updateMoney(stage)
     }
     else {
         winGame()
@@ -225,8 +268,8 @@ function lowerTimerEverySecond() {
     else {
         gameOver()
     }
-    
 }
+
 
 function gameOver() {
     show("#gameoverScreen");
@@ -238,6 +281,7 @@ function startGame() {
     hide("#gameoverScreen");
     startTicker();
     startRound();
+    updateMoney(1);
 }
 
 function hide(identifier) {
