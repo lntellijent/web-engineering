@@ -6,6 +6,7 @@ wichtige HTML-Elemente
 const subtn = document.querySelector("#subtn"); // "Submit"-Button
 const txt = document.querySelector("#userInput"); // Textarea als Zahleninput
 const helpcorrect = document.querySelector("#helpcorrectfield"); // Feld für Hilfestellung bei Fehlern oder Rückmeldung für die Korrektheit
+const body = document.querySelector("body"); // body für Hintergrundmanipulation
 
 /*
 Globale Arbeitsvariablen
@@ -15,21 +16,24 @@ let streak = 0; // Zähler der hintereinander korrekt gelösten Aufgaben
 let generatedTask; // Enthält die zu berechnende Aufgabe
 
 newTask(); // Befüllung von "generatedTask"
+changeBackgroundColor(""); // setzen des Standard-Hintergrundgradients
 
 subtn.addEventListener("click", async event => {
     const input = parseInt(txt.value.trim()); // Inputkonvertierung zur Number um falsche Eingaben auszusortieren und schummeln vorzubeugen.
     if (typeof input === "number") { // Der Input muss vom Typ Number sein
         if (input === generatedTask.missing) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
             newTask(); // Aufgabe erfolgreich gelöst - neue Aufgabe erstellen
+            changeBackgroundColor("correct");
             if (++streak >= streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
                 helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
             else
                 helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
             show(); // popup anzeigen
-        } else if(isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
+        } else if (isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
             helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
             show(); // popup anzeigen
         } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
+            changeBackgroundColor("incorrect");
             help(); // Hilfestellung
             show(); // popup anzeigen
             streak = 0; // Streak zurücksetzen, da die Antwort inkorrekt ist.
@@ -54,22 +58,57 @@ function help() {
     // isNaN-Check o.ä. redundant, da newTask keine Errors wirft.
     helpcorrect.innerHTML = `Inkorrekt! Versuche erneut.<br>Hilfestellung:<br><br>` // Statusausgabe
 
-    const w = (generatedTask.leftOperand - (generatedTask.leftOperand%10)) / 10 // Zehnerstelle des linken Operanden
-    const x = generatedTask.leftOperand%10 // Einerstelle des linken Operanden
-    const y = (generatedTask.rightOperand - (generatedTask.rightOperand%10)) / 10 // Zehnerstelle des rechten Operanden
-    const z = generatedTask.rightOperand%10 // Einerstelle des rechten Operanden
+    /*
+        1. l+r=g
 
-    switch (generatedTask.operation) { // Teilung der Operation
-        case '+': // Addition
-            const positiveCarry = 10-x // Wert, der den linken Operanden auf den nächsthöheren Zehner bringt
-            helpcorrect.innerHTML += `Zehnerstelle: ${w}+${y}=${w+y} &rarr; ${(w+y)*10}<br>` // Berechnung der Zehnerstelle
-            helpcorrect.innerHTML += `Auffüllen: ${x}+${positiveCarry}=10 &rarr; ${z}-${positiveCarry}=${z-positiveCarry}<br>` // Auffüllen + Berechnung der Einerstelle
-            helpcorrect.innerHTML += `Addieren: ${(w+y)*10}+10+${z-positiveCarry}=?` // Kombination von Zehner- und Einerstelle
+            1.1 l missing
+                l=g-r
+
+            1.2 r missing
+                r=g-l
+
+            1.3 g missing
+                g=l+r
+
+        2. l-r=g
+
+            2.1 l missing
+                l=g+r
+
+            2.2 r missing
+                r=l-g
+
+            2.3 g missing
+                g=l-r
+     */
+
+
+    switch (generatedTask.operation) {
+        case "+":
+            switch (generatedTask.blankIndex) {
+                case 0: // leftOperand fehlt
+                    helpcorrect.innerHTML += `Berechne ${generatedTask.leftOperand}=${generatedTask.result}-${generatedTask.rightOperand}`;
+                    break;
+                case 1: // rightOperand fehlt
+                    helpcorrect.innerHTML += `Berechne ${generatedTask.rightOperand}=${generatedTask.result}-${generatedTask.leftOperand}`;
+                    break;
+                case 2: // result fehlt
+                    helpcorrect.innerHTML += `Berechne ${generatedTask.result}=${generatedTask.leftOperand}+${generatedTask.rightOperand}`;
+                    break;
+            }
             break;
-        case '-': // Subtraktion
-            helpcorrect.innerHTML += `Zehnerstelle: ${w}-${y}=${w-y} &rarr; ${(w-y)*10}<br>` // Berechnung der Zehnerstelle
-            helpcorrect.innerHTML += `10 Borgen: ${(w-y)*10}-10=${(w-y-1)*10}, 10+${x}=${x+10}&rarr; ${x+10}-${z}=${x-z+10}<br>` // Zehner borgen, Zehnerstelle anpassen + Einerstelle berechnen
-            helpcorrect.innerHTML += `Subtrahieren: ${(w-y-1)*10}+${x-z+10}=?` // Kombination von Zehner- und Einerstelle
+        case "-":
+            switch (generatedTask.blankIndex) {
+                case 0: // leftOperand fehlt
+                    helpcorrect.innerHTML += `Berechne ${generatedTask.leftOperand}=${generatedTask.result}+${generatedTask.rightOperand}`;
+                    break;
+                case 1: // rightOperand fehlt
+                    helpcorrect.innerHTML += `Berechne ${generatedTask.rightOperand}=${generatedTask.leftOperand}-${generatedTask.result}`;
+                    break;
+                case 2: // result fehlt
+                    helpcorrect.innerHTML += `Berechne ${generatedTask.result}=${generatedTask.leftOperand}-${generatedTask.rightOperand}`;
+                    break;
+            }
             break;
     }
 }
@@ -78,16 +117,30 @@ function help() {
  * Zeigt das popupfeld im DOM
  */
 function show() {
-    if(popupvisible !== true)
+    if (popupvisible !== true)
         helpcorrect.classList.toggle("hidden"); // Hinweis wird sichtbar
     popupvisible = true
+}
+
+function changeBackgroundColor(scenario) {
+    switch (scenario) {
+        case "correct":
+            body.className = "correct";
+            break;
+        case "incorrect":
+            body.className = "incorrect";
+            break;
+        default:
+            body.className = "standard";
+            break;
+    }
 }
 
 /**
  * Versteckt das popupfeld im DOM
  */
 function hide() {
-    if(popupvisible === true)
+    if (popupvisible === true)
         helpcorrect.classList.toggle("hidden"); // Hinweis wird unsichtbar
     popupvisible = false
 }
@@ -118,23 +171,23 @@ function createTask() {
     switch (operation) {
         // #ToDo "Hard Mode" Bei denen nicht (0,100), sondern (-100, 100) betrachtet wird
         case 0: // +
-            w = getRandomIntInclusive(0,8); // Zehnerstelle des linken Operanden
-            x = getRandomIntInclusive(1,9); // Einerstelle des linken Operanden
-            y = getRandomIntInclusive(0,8-w); // Zehnerstelle des rechten Operanden
-            z = getRandomIntInclusive(10-x,9); // Einerstelle des rechten Operanden
+            w = getRandomIntInclusive(0, 8); // Zehnerstelle des linken Operanden
+            x = getRandomIntInclusive(1, 9); // Einerstelle des linken Operanden
+            y = getRandomIntInclusive(0, 8 - w); // Zehnerstelle des rechten Operanden
+            z = getRandomIntInclusive(10 - x, 9); // Einerstelle des rechten Operanden
 
-            leftOperand = w*10+x; // Zusammensetzung des linken Operanden
-            rightOperand = y*10+z; // Zusammensetzung des rechten Operanden
+            leftOperand = w * 10 + x; // Zusammensetzung des linken Operanden
+            rightOperand = y * 10 + z; // Zusammensetzung des rechten Operanden
             result = leftOperand + rightOperand // Berechnung des Ergebnisses zur Überprüfung
             break;
         case 1: // -
-            w = getRandomIntInclusive(1,9); // Zehnerstelle des linken Operanden
-            x = getRandomIntInclusive(0,8); // Einerstelle des linken Operanden
-            y = getRandomIntInclusive(0,w-1); // Zehnerstelle des rechten Operanden
-            z = getRandomIntInclusive(x+1,9); // Einerstelle des rechten Operanden
+            w = getRandomIntInclusive(1, 9); // Zehnerstelle des linken Operanden
+            x = getRandomIntInclusive(0, 8); // Einerstelle des linken Operanden
+            y = getRandomIntInclusive(0, w - 1); // Zehnerstelle des rechten Operanden
+            z = getRandomIntInclusive(x + 1, 9); // Einerstelle des rechten Operanden
 
-            leftOperand = w*10+x; // Zusammensetzung des linken Operanden
-            rightOperand = y*10+z; // Zusammensetzung des rechten Operanden
+            leftOperand = w * 10 + x; // Zusammensetzung des linken Operanden
+            rightOperand = y * 10 + z; // Zusammensetzung des rechten Operanden
             result = leftOperand - rightOperand // Berechnung des Ergebnisses zur Überprüfung
             break;
     }
