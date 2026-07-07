@@ -1,17 +1,34 @@
+@import "color.css";
+
+* {
+    color: var(--text);
+    background-color: var(--background);
+}
+
+h1 {
+    color: var(--primary);
+    text-align: center;
+    font-size: xx-large;
+}
+
 body {
     width: 90%;
     margin: auto;
 }
 
 #frage {
-    width: 80%;
+    width: 60%;
     margin: 2rem auto;
+    text-align: center;
+    font-size: x-large;
+    background-color: var(--primary);
+    border: 3px solid var(--accent);
+    border-radius: 18px;
 }
 
 .awnserboxes {
     width: 80%;
     margin: auto;
-
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -19,11 +36,13 @@ body {
 
 .awnserbox {
     padding: 1rem;
-    background-color: darkblue;
-    border: 2px solid white;
+    background-color: var(--primary);
+    border: 3px solid var(--accent);
     border-radius: 10px;
+    text-align: center;
+    font-size: large;
 }
-
+ 
 @media (max-width: 600px) {
     .awnserboxes {
         grid-template-columns: 1fr;
@@ -58,13 +77,11 @@ body {
 }
 
 #timer {
-    width: 150px;
-    height: 150px;
     text-align:center;
-
-    border-radius: 50%;
-
-    border: 3px solid rgb(239, 44, 44);
+    font-size: xxx-large;
+    font-weight: bolder;
+    color: var(--text);
+    padding-bottom: 100px;
 }
 
 .right-panel table {
@@ -80,6 +97,10 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+#moneyfield {
+    color: red;
 }
 
 /*---------------Game Over Screen----------*/
@@ -113,11 +134,58 @@ body {
 }
 
 
-.gameover-buttons button {
-    padding: 12px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
+#jokerCallScreen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.jokerCallBox {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 400px;
+}
+
+/*------------Public Joker------------*/
+
+#jokerPublicScreen {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.7);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.jokerBox {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 350px;
+}
+
+.jokerBox h2 {
+    margin-top: 0;
+}
+
+.jokerBox p {
+    font-size: 1.3rem;
+}
+
+.jokerBox button {
+    margin-top: 20px;
+    padding: 10px 20px;
 }
 
