@@ -7,6 +7,10 @@
 
     </head>
     <body>
+        <a href="main.html" class="menu-button">
+            Menü
+        </a>
+
         <div class="hidden" id="gameoverScreen">
             <h1>Game Over</h1>
 
@@ -19,22 +23,41 @@
             </div>
         </div>
 
-        <nav>
-            <a href="main.html">Home</a>
-            <a href="highscore.html">Highscores</a>
-            <a href="millionare.html">Mathe-Millionär</a>
-            <a href="practice.html">Üben</a>
-        </nav>
-        <hr />
+        <div class="hidden" id="jokerCallScreen">
+            <div class="jokerCallBox">
+                <h2>Telefonjoker</h2>
+
+                <p id="jokerCallText"></p>
+
+                <button onclick="closeJokerCall()">
+                    Verstanden
+                </button>
+            </div>
+        </div>
+
+        <div class="hidden" id="jokerPublicScreen">
+            <div class="jokerBox">
+                <h2>Publikumsjoker</h2>
+
+                <p>A: <span id="publicA"></span>%</p>
+                <p>B: <span id="publicB"></span>%</p>
+                <p>C: <span id="publicC"></span>%</p>
+                <p>D: <span id="publicD"></span>%</p>
+
+                <button onclick="hide('#jokerPublicScreen')">Verstanden</button>
+            </div>
+        </div>
+
+
         
         <h1>Wer wird Mathe-Millionär</h1>
 
         <div class="game-layout">
 
             <div class="left-panel">
-                <button onclick="jokerFifty()">50 : 50</button>
-                <button>Publikum</button>
-                <button onclick="jokerCall()">Telefon</button>
+                <button id="jokerFifty" onclick="jokerFifty()">50 : 50</button>
+                <button id="jokerPublic" onclick="jokerPublic()">Publikum</button>
+                <button id="jokerCall" onclick="jokerCall()">Telefon</button>
             </div>
 
             <div class="middle-panel">
@@ -50,10 +73,10 @@
      
         <div id="frage"></div>
         <div class="awnserboxes">
-            <div id="awnserbox1" class="awnserbox" onclick="checkButton1()"></div>
-            <div id="awnserbox2" class="awnserbox" onclick="checkButton2()"></div>
-            <div id="awnserbox3" class="awnserbox" onclick="checkButton3()"></div>
-            <div id="awnserbox4" class="awnserbox" onclick="checkButton4()"></div>
+            <div id="awnserbox1" class="awnserbox" onclick="checkAnswer(this)"></div>
+            <div id="awnserbox2" class="awnserbox" onclick="checkAnswer(this)"></div>
+            <div id="awnserbox3" class="awnserbox" onclick="checkAnswer(this)"></div>
+            <div id="awnserbox4" class="awnserbox" onclick="checkAnswer(this)"></div>
         </div>
 
 
