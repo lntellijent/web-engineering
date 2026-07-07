@@ -1,37 +1,64 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/highscore.css" />
     <title>Highscores</title>
-  </head>
-  <body>
-    <nav>
-      <a href="main.html">Home</a>
-      <a href="highscore.html">Highscores</a>
-      <a href="millionare.html">Mathe-Millionär</a>
-      <a href="practice.html">Üben</a>
-    </nav>
-    <hr />
-    <section>
-      <h1>Highscores</h1>
-      <table id="highscoresTable">
-        <tr>
-          <th>Datum</th>
-          <th>Modi</th>
-          <th>Zeit</th>
-          <th>Quote</th>
-        </tr>
-        <tr>
-          <td>2026-05-11</td>
-          <td>kleines 1x1</td>
-          <td>70,9s</td>
-          <td>8/10</td>
-        </tr>
-      </table>
+</head>
 
-      <div id="myPlot" style="width: 900px; height: 500px"></div>
-      <script defer src="../js/js.js"></script>
-    </section>
+  <body>
+    <a href="main.html" class="menu-button">
+            Menü
+    </a>
+    
+    <h1>Hier stehen die Besten</h1>
+    
+    <div id="twoScoreboards">
+      <div class="boxbox">
+        <h2>Zehnerübergang</h2>
+
+        <table id="scoresZehnerübergang">
+          <tr>
+            <th>Platz</th>
+            <th>Spieler</th>
+            <th>Zeit</th>
+            <th>Datum</th>
+          </tr>
+        </table>
+
+      </div>
+
+      <div class="boxbox">
+        <h2>Mathe Millionär</h2>
+
+        <table>
+          <tr>
+            <th>Platz</th>
+            <th>Spieler</th>
+            <th>Zeit</th>
+            <th>Datum</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+
+      
+    <script src="../js/highscore.js"></script>
+
   </body>
 </html>
