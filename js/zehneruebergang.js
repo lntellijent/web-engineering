@@ -7,7 +7,6 @@ const subtn = document.querySelector("#subtn"); // "Submit"-Button
 const txt = document.querySelector("#userInput"); // Textarea als Zahleninput
 const helpcorrect = document.querySelector("#helpcorrectfield"); // Feld für Hilfestellung bei Fehlern oder Rückmeldung für die Korrektheit
 const body = document.querySelector("body"); // body für Hintergrundmanipulation
-
 /*
 Globale Arbeitsvariablen
  */
@@ -111,6 +110,8 @@ function help() {
             }
             break;
     }
+
+    helpcorrect.ariaLabel = helpcorrect.innerHTML; // Übernahme der Ausgabe für Screenreader
 }
 
 /**
@@ -122,7 +123,20 @@ function show() {
     popupvisible = true
 }
 
+/**
+ * Wechselt die Hintergrundfarbe basierend auf der Korrektheit der Aufgabe.
+ * Wurde sie gelöst, wird der Hintergrund grün, falls nicht, wird er rot.
+ * Standard in allen anderen Fällen ist neutrales weiß.
+ * @param scenario String
+ * - "korrekt" (grün)
+ * - "inkorrekt" (rot)
+ * - alles andere (weiß)
+ */
 function changeBackgroundColor(scenario) {
+    /*
+    Wechselt die Klasse basierend auf dem gesetzten Szenario.
+    Mehr dazu in CSS
+     */
     switch (scenario) {
         case "correct":
             body.className = "correct";
@@ -244,6 +258,16 @@ function newTask() {
     manipulate("#rightOperand", generatedTask.rightOperand);
     manipulate("#relation", generatedTask.relation);
     manipulate("#result", generatedTask.result);
+
+    /*
+    Leider lesen Screenreader weder "?", noch "-" oder "+" explizit vor.
+    Daher erfolgt das manuelle ersetzen, wo nötig.
+     */
+    txt.ariaLabel = `${generatedTask.leftOperand === "?" ? "x" : generatedTask.leftOperand}`;
+    txt.ariaLabel += `${generatedTask.operation === "+" ? " plus " : " minus "}`;
+    txt.ariaLabel += `${generatedTask.rightOperand === "?" ? "x" : generatedTask.rightOperand}`;
+    txt.ariaLabel += `${generatedTask.relation}`;
+    txt.ariaLabel += `${generatedTask.result === "?" ? "x" : generatedTask.result}`;
 
     console.log(generatedTask);
 }
