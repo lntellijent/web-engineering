@@ -18,7 +18,6 @@ function showHighscores() {
             row.insertCell().textContent = player.date;
 
         });
-
 }
 
 function saveZehneruebergangScore(correctAnswers) {
@@ -38,6 +37,25 @@ function saveZehneruebergangScore(correctAnswers) {
 
     localStorage.setItem(
         "zehneruebergangScores",
+        JSON.stringify(highscores)
+    );
+}
+
+function saveMillionaerScore(maxMoney) {
+
+    const entry = {
+        name: localStorage.getItem("playerName"),
+        maxMoney: maxMoney,
+        date: new Date().toLocaleDateString("de-DE")
+    };
+
+    let highscores =
+        JSON.parse(localStorage.getItem("millionaerScores")) || [];
+
+    highscores.push(entry);
+
+    localStorage.setItem(
+        "millionaerScores",
         JSON.stringify(highscores)
     );
 }
