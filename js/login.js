@@ -1,22 +1,72 @@
-function confirmName() {
-    const username = document.getElementById("username").value;
+const username = document.querySelector("#username");
+const startButton = document.querySelector("#startButton");
+const welcomeTextField = document.querySelector("#welcomeText");
+const errorTextField = document.querySelector("#showError");
 
-    if (username.trim() === "") {
-        document.querySelector("#showError").textContent = "Gebe einen gültigen Namen ein!"
+document.addEventListener("click", () => {
+    username.focus();
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        startButton.click();
+    }
+});
+
+document.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", (event) => {
+        switch (event.target.id) {
+            case "startButton":
+                confirmName();
+                break;
+
+            case "millionareButton":
+                startGame('millionare.html');
+                break;
+
+            case "zehneruebergangButton":
+                startGame('zehneruebergang.html')
+                break;
+
+            case "highscoreButton":
+                startGame('highscore.html')
+                break;
+
+            default:
+                console.log("Unbekannter Button");
+        }
+    });
+});
+
+if (sessionStorage.getItem("playerName")) {
+    show("#gameselection")
+    hide("#nameinput")
+    showWelcomeMessage()
+} else {
+    show("#nameinput")
+    hide("#gameselection")
+    username.focus();
+}
+
+function confirmName() {
+    const regex = /^[\p{L}\p{N}]{1,20}$/u;
+
+    if (!regex.test(username.value.trim())) {
+        errorTextField.textContent = "Gebe einen gültigen Namen ein!"
         return;
     }
 
-    localStorage.setItem("playerName", username);
+    sessionStorage.setItem("playerName", username.value.trim());
 
-    confirmReady(username)
-    
+    show("#gameselection")
+    hide("#nameinput")
+
+    showWelcomeMessage()
 }
 
-function confirmReady(username) {
-    document.getElementById("welcomeText").textContent =
-        `Hallo ${username}, was willst du spielen?`;
-    
-        show("#popup")
+function showWelcomeMessage() {
+    welcomeTextField.textContent =
+        `Hallo ${sessionStorage.getItem("playerName")}, was willst du spielen?`;
 }
 
 function startGame(page) {

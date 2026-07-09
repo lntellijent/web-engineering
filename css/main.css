@@ -42,9 +42,10 @@ button:hover {
     margin: 0 auto;
 }
 
+#nameinput {
+}
 
-
-#popup {
+#gameselection {
     padding: 30px;
     border-radius: 10px;
     text-align: center;

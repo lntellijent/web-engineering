@@ -12,7 +12,7 @@ const body = document.querySelector("body"); // body für Hintergrundmanipulatio
 /*
 Globale Arbeitsvariablen
  */
-let popupvisible; // Interne Variable, die anzeigt, ob das popup sichtbar ist oder nicht.
+let popupvisible; // Interne Variable, die anzeigt, ob das gameselection sichtbar ist oder nicht.
 let streak = 0; // Zähler der hintereinander korrekt gelösten Aufgaben
 let generatedTask; // Enthält die zu berechnende Aufgabe
 
@@ -34,14 +34,14 @@ subtn.addEventListener("click", async event => {
             helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
         else
             helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
-        show(); // popup anzeigen
+        show(); // gameselection anzeigen
     } else if ((text !== "+" && text !== "-") && isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
         helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
-        show(); // popup anzeigen
+        show(); // gameselection anzeigen
     } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
         changeBackgroundColor("incorrect");
         help(); // Hilfestellung
-        show(); // popup anzeigen
+        show(); // gameselection anzeigen
 
         saveZehneruebergangScore(streak);
         streak = 0; // Streak zurücksetzen, da die Antwort inkorrekt ist.

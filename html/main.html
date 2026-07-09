@@ -3,52 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/main.css"/>
     <title>Wer wird Mathemann?</title>
 </head>
+<body>
+<h1>Wer wird Mathemann?</h1>
 
-<body id="boxbox">
+<div id="nameinput">
+    <form id="loginform">
+        <label for="username">Wie heißt du?</label>
+        <input id="username"
+               type="text"
+               maxlength="20"
+               placeholder="Albert Einstein">
+        <p id="showError"></p>
+        <button type="button" id="startButton">Bestätigen</button>
+    </form>
+</div>
 
-    <div>
-        <h1>Wer wird Mathemann?</h1>
+<div id="gameselection">
+    <h2 id="welcomeText"></h2>
+    <p>Wähle deinen Spielmodus:</p>
 
-        <form id="loginform">
-            <label for="username">Wie heißt du?</label>
-
-            <input
-                id="username"
-                type="text"
-                maxlength="20"
-                placeholder="Albert Einstein">
-            <p id="showError"></p>
-
-            <button type="button" onclick="confirmName()">
-                Bestätigen
-            </button>
-        </form>
-    </div>
-
-    <div id="popup" class="hidden">
-
-            <h2 id="welcomeText"></h2>
-
-            <p>Wähle deinen Spielmodus:</p>
-
-            <section id="buttons">
-                <button onclick="startGame('millionare.html')">
-                    Mathe Millionär
-                </button>
-
-                <button onclick="startGame('zehneruebergang.html')">
-                    Zehnerübergang
-                </button>
-
-                <button onclick="startGame('highscore.html')">
-                    Highscore
-                </button>
-            </section>
-        </div>
-    <script src="../js/login.js"></script>
-
+    <section id="buttons">
+        <button type="button" id="millionareButton">Mathe Millionär</button>
+        <button type="button" id="zehneruebergangButton">Zehnerübergang</button>
+        <button type="button" id="highscoreButton">Highscore</button>
+    </section>
+</div>
+<script src="../js/login.js"></script>
 </body>
 </html>
