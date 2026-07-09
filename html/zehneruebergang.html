@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/zehneruebergang.css">
+        <title>Zehnerübergang</title>
+    </head>
+    <body class="standard">
+        <div id="zehneruebergang">
+            <script src="../js/zehneruebergang.js" defer></script>
+            <section id="task">
+            <div id="leftOperand"></div>
+            <div id="operation"></div>
+            <div id="rightOperand"></div>
+            <div id="relation"></div>
+            <div id="result"></div>
+            </section>
+            <section id="input">
+                <label for="userInput" class="always-hidden">
+                    Ergebnis eingeben
+                </label>
+                <input type="number"
+                       id="userInput"
+                       name="age"
+                       min="0"
+                       max="99"
+                       step="1"
+                       placeholder="0-99"
+                       required
+                       autofocus>
+                <button id="subtn" aria-label="Ergebnis prüfen">Prüfen</button>
+            </section>
+            <p class="hidden" id="helpcorrectfield"></p>
+        </div>
+    </body>
+</html>
