@@ -20,7 +20,7 @@ function showHighscores() {
         });
 }
 
-function saveZehneruebergangScore(correctAnswers) {
+export function saveZehneruebergangScore(correctAnswers) {
 
     const entry = {
         name: localStorage.getItem("playerName"),
