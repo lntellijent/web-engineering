@@ -18,24 +18,32 @@ newTask(); // Befüllung von "generatedTask"
 changeBackgroundColor(""); // setzen des Standard-Hintergrundgradients
 
 subtn.addEventListener("click", async event => {
-    const input = parseInt(txt.value.trim()); // Inputkonvertierung zur Number um falsche Eingaben auszusortieren und schummeln vorzubeugen.
-    if (typeof input === "number") { // Der Input muss vom Typ Number sein
-        if (input === generatedTask.missing) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
-            newTask(); // Aufgabe erfolgreich gelöst - neue Aufgabe erstellen
-            changeBackgroundColor("correct");
-            if (++streak >= streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
-                helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
-            else
-                helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
-            show(); // popup anzeigen
-        } else if (isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
-            helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
-            show(); // popup anzeigen
-        } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
-            changeBackgroundColor("incorrect");
-            help(); // Hilfestellung
-            show(); // popup anzeigen
-            streak = 0; // Streak zurücksetzen, da die Antwort inkorrekt ist.
+    const text = txt.value.trim();
+    const input = parseInt(text); // Inputkonvertierung zur Number um falsche Eingaben auszusortieren und schummeln vorzubeugen.
+
+    console.log(generatedTask.missing === text);
+    console.log(generatedTask.missing);
+    console.log(text);
+
+    if (input === generatedTask.missing || (generatedTask.blankIndex === 0 && text === generatedTask.missing)) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
+        newTask(); // Aufgabe erfolgreich gelöst - neue Aufgabe erstellen
+        changeBackgroundColor("correct");
+        if (++streak >= streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
+            helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
+        else
+            helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
+        show(); // popup anzeigen
+    } else if ((text !== "+" && text !== "-") && isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
+        helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
+        show(); // popup anzeigen
+    } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
+        changeBackgroundColor("incorrect");
+        help(); // Hilfestellung
+        show(); // popup anzeigen
+        streak = 0; // Streak zurücksetzen, da die Antwort inkorrekt ist.
+
+        if (generatedTask.blankIndex === 0) {
+            txt.value = "";
         }
     }
 })
@@ -179,9 +187,10 @@ function clear(div) { // Leert das übergebene div
 }
 
 function createTask() {
-    const operation = getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
+    let operation = getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
     let w, x, y, z; // Variablen für die einzelnen Stellen; wichtig für die Generationslogik von Zehnerübergängen
     let leftOperand, rightOperand, result; // Variablen für die linke und rechte Zahl, sowie das Ergebnis
+
     switch (operation) {
         // #ToDo "Hard Mode" Bei denen nicht (0,100), sondern (-100, 100) betrachtet wird
         case 0: // +
@@ -206,26 +215,41 @@ function createTask() {
             break;
     }
 
-    const blank = getRandomIntInclusive(0, 2) // Auswahl der fehlenden Zahl (Index) via Zufall
+    operation = operation === 0 ? "+" : "-";
+    const blank = getRandomIntInclusive(0, 3) // Auswahl der fehlenden Zahl (Index) via Zufall
     let missing; // Enthält den Wert der fehlenden Zahl
     switch (blank) {
-        case 0: // linke Zahl fehlt
+        case 0: // Operator fehlt
+            missing = operation;
+            operation = "?";
+
+            txt.placeholder = "+/-";
+            txt.type = "text";
+            txt.pattern = "\[+-\]";
+            break;
+        case 1: // linke Zahl fehlt
             missing = leftOperand; // Wert wird für das Ergebnis zwischengespeichert
             leftOperand = "?" // Wert wird mit einem Platzhalter besetzt
             break;
-        case 1: // rechte Zahl fehlt
+        case 2: // rechte Zahl fehlt
             missing = rightOperand; // Wert wird für das Ergebnis zwischengespeichert
             rightOperand = "?" // Wert wird mit einem Platzhalter besetzt
             break;
-        case 2: // Ergebnis fehlt
+        case 3: // Ergebnis fehlt
             missing = result; // Wert wird für das Ergebnis zwischengespeichert
             result = "?" // Wert wird mit einem Platzhalter besetzt
             break;
     }
 
+    if (blank !== 0) {
+        txt.placeholder = "0-99";
+        txt.type = "number";
+        txt.pattern = "";
+    }
+
     return {
         leftOperand: leftOperand,
-        operation: operation === 0 ? "+" : "-",
+        operation: operation,
         rightOperand: rightOperand,
         relation: "=",
         result: result,
@@ -264,7 +288,18 @@ function newTask() {
     Daher erfolgt das manuelle ersetzen, wo nötig.
      */
     txt.ariaLabel = `${generatedTask.leftOperand === "?" ? "x" : generatedTask.leftOperand}`;
-    txt.ariaLabel += `${generatedTask.operation === "+" ? " plus " : " minus "}`;
+    switch (generatedTask.operation) {
+        case "+":
+            txt.ariaLabel += `Plus`;
+            break;
+        case "-":
+            txt.ariaLabel += `Minus`;
+            break;
+        case "?":
+            txt.ariaLabel += `x`;
+            break;
+    }
+
     txt.ariaLabel += `${generatedTask.rightOperand === "?" ? "x" : generatedTask.rightOperand}`;
     txt.ariaLabel += `${generatedTask.relation}`;
     txt.ariaLabel += `${generatedTask.result === "?" ? "x" : generatedTask.result}`;
