@@ -274,7 +274,7 @@ function startRound() {
 } 
 
 function winGame() {
-    /*Win Game div einblenden*/
+    saveMillionaerScore(moneystage[stage -1]);
 }
 
 function startTicker() {
@@ -299,6 +299,7 @@ function lowerTimerEverySecond() {
 
 function gameOver() {
     show("#gameoverScreen");
+    saveMillionaerScore(moneystage[stage -1]);
 }
 
 function resertJokers() {
