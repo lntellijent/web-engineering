@@ -1,23 +1,25 @@
 const playerName = localStorage.getItem("playerName");
 
-function showHighscores() {
+
+
+function showMillionaerHighscores() {
+
     const highscores =
-    JSON.parse(localStorage.getItem("zehneruebergangScores")) || []; // elemente laden
+        JSON.parse(localStorage.getItem("millionaerScores")) || [];
 
+    const table = document.getElementById("millionaerTable");
 
-    const table =
-            document.getElementById("zehnerTable");
+    highscores.forEach((player, index) => {
 
-        highscores.forEach((player, index) => {
+        const row = table.insertRow();
 
-            const row = table.insertRow();
+        row.insertCell().textContent = index + 1;
+        row.insertCell().textContent = player.name;
+        row.insertCell().textContent = player.maxMoney;
+        row.insertCell().textContent = player.date;
 
-            row.insertCell().textContent = index + 1;
-            row.insertCell().textContent = player.name;
-            row.insertCell().textContent = player.correctAnswers;
-            row.insertCell().textContent = player.date;
+    });
 
-        });
 }
 
 export function saveZehneruebergangScore(correctAnswers) {
@@ -59,3 +61,5 @@ function saveMillionaerScore(maxMoney) {
         JSON.stringify(highscores)
     );
 }
+
+showMillionaerHighscores();
