@@ -1,13 +1,191 @@
-.awnserbox {
-    width: 300px;
-    height: 75px;
-    margin: 30px;
-    background-color: darkblue;
-    color: white;
-    text-align: center;
-    border: 8px;
+@import "color.css";
+
+* {
+    color: var(--text);
+    background-color: var(--background);
 }
 
-.awnserbox:hover {
-    background-color: lightblue;
+h1 {
+    color: var(--primary);
+    text-align: center;
+    font-size: xx-large;
 }
+
+body {
+    width: 90%;
+    margin: auto;
+}
+
+#frage {
+    width: 60%;
+    margin: 2rem auto;
+    text-align: center;
+    font-size: x-large;
+    background-color: var(--primary);
+    border: 3px solid var(--accent);
+    border-radius: 18px;
+}
+
+.awnserboxes {
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.awnserbox {
+    padding: 1rem;
+    background-color: var(--primary);
+    border: 3px solid var(--accent);
+    border-radius: 10px;
+    text-align: center;
+    font-size: large;
+}
+ 
+@media (max-width: 600px) {
+    .awnserboxes {
+        grid-template-columns: 1fr;
+    }
+}
+
+/*---------Obere Sektion---------*/
+
+.game-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+
+    width: 90%;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.left-panel button {
+    padding: 10px;
+}
+
+.middle-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#timer {
+    text-align:center;
+    font-size: xxx-large;
+    font-weight: bolder;
+    color: var(--text);
+    padding-bottom: 100px;
+}
+
+.right-panel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.right-panel td {
+    border: 1px solid white;
+    padding: 4px;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#moneyfield {
+    color: red;
+}
+
+/*---------------Game Over Screen----------*/
+#gameoverScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(128, 128, 128, 0.9);
+
+    z-index: 9999;
+
+    /* Zentrierung */
+    justify-content: center;
+    align-items: center;
+}
+
+#gameoverScreen h1 {
+    font-size: 3rem;
+    margin: 0;
+    color: white;
+}
+
+.gameover-buttons button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+
+#jokerCallScreen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.jokerCallBox {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 400px;
+}
+
+/*------------Public Joker------------*/
+
+#jokerPublicScreen {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.7);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.jokerBox {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 350px;
+}
+
+.jokerBox h2 {
+    margin-top: 0;
+}
+
+.jokerBox p {
+    font-size: 1.3rem;
+}
+
+.jokerBox button {
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+

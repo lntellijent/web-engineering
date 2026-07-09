@@ -29,10 +29,27 @@ button:hover {
     background-color: var(--secondary);
 }
 
-#boxbox {
+
+#loginform {
+
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+
     text-align: center;
-    height: 100vh;
+
+    align-items: center;
+
+    margin: 0 auto;
+}
+
+
+
+#popup {
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
 }

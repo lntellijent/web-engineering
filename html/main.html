@@ -1,24 +1,54 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../css/main.css">
-    <title>Start</title>
-  </head>
-  <body id="boxbox">
-    <div> <!-- Wichtig für alignment; Sonst erscheinen Elemente seitlich nebeneinander anstelle von untereinander -->
-      <h1>Wer wird Mathemann?</h1>
-      <form id="loginform">
-        <label for="username">Wie heißt du?</label>
-        <input id="username" max="20" placeholder="Albert Einstein" type="text" />
-        <p>Spielmodi</p>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/main.css" />
+    <title>Wer wird Mathemann?</title>
+</head>
 
-        <section id="buttons">
-          <button>Üben</button>
-          <button formaction="millionare.html">Mathe Millionär</button>
-          <button formaction="zehneruebergang.html">Zehnerübergang</button>
-        </section>
-      </form>
+<body id="boxbox">
+
+    <div>
+        <h1>Wer wird Mathemann?</h1>
+
+        <form id="loginform">
+            <label for="username">Wie heißt du?</label>
+
+            <input
+                id="username"
+                type="text"
+                maxlength="20"
+                placeholder="Albert Einstein">
+            <p id="showError"></p>
+
+            <button type="button" onclick="confirmName()">
+                Bestätigen
+            </button>
+        </form>
     </div>
-  </body>
+
+    <div id="popup" class="hidden">
+
+            <h2 id="welcomeText"></h2>
+
+            <p>Wähle deinen Spielmodus:</p>
+
+            <section id="buttons">
+                <button onclick="startGame('millionare.html')">
+                    Mathe Millionär
+                </button>
+
+                <button onclick="startGame('zehneruebergang.html')">
+                    Zehnerübergang
+                </button>
+
+                <button onclick="startGame('highscore.html')">
+                    Highscore
+                </button>
+            </section>
+        </div>
+    <script src="../js/login.js"></script>
+
+</body>
 </html>
