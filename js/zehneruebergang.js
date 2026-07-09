@@ -1,3 +1,5 @@
+import {saveZehneruebergangScore} from "./highscore.js";
+
 const streakVisibleAfterXCorrect = 5;
 
 /*
@@ -40,6 +42,8 @@ subtn.addEventListener("click", async event => {
         changeBackgroundColor("incorrect");
         help(); // Hilfestellung
         show(); // popup anzeigen
+
+        saveZehneruebergangScore(streak);
         streak = 0; // Streak zurücksetzen, da die Antwort inkorrekt ist.
 
         if (generatedTask.blankIndex === 0) {
