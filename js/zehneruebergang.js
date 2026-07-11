@@ -18,7 +18,7 @@ Zeitlogik
 
 alle Werte in Millisekunden
  */
-const initialRoundTime = 20 * 1000; // initiale Zeit pro Runde
+const initialRoundTime = 2 * 60 * 1000; // initiale Zeit pro Runde
 const timeGainPerCorrectAnswer = 3 * 1000; // Zeitgewinn für richtige Aufgaben
 const timePenaltyAtSkip = 10 * 1000; // Zeitverlust für das Überspringen einer Aufgabe
 
@@ -89,6 +89,7 @@ document.addEventListener("click", ({target}) => {
             timeRemaining = initialRoundTime;
             correctAnswers = 0;
             allGivenAnswers = 0;
+            startTicker();
 
             hide(); // Hilfestellung verbergen
             newTask(); // Neue Aufgabe erstellen
