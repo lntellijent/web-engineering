@@ -1,6 +1,5 @@
 import {saveZehneruebergangScore} from "./highscore.js";
 
-const streakVisibleAfterXCorrect = 5;
 
 /*
 wichtige HTML-Elemente
@@ -9,114 +8,232 @@ const subtn = document.querySelector("#subtn"); // "Submit"-Button
 const txt = document.querySelector("#userInput"); // Textarea als Zahleninput
 const helpcorrect = document.querySelector("#helpcorrectfield"); // Feld für Hilfestellung bei Fehlern oder Rückmeldung für die Korrektheit
 const body = document.querySelector("body"); // body für Hintergrundmanipulation
+const timer = document.querySelector("#timer");
+const gameScreen = document.querySelector("#gameScreen");
+const gameOverScreen = document.querySelector("#gameOverScreen");
+
+
+/*
+Zeitlogik
+
+alle Werte in Millisekunden
+ */
+const initialRoundTime = 20 * 1000; // initiale Zeit pro Runde
+const timeGainPerCorrectAnswer = 3 * 1000; // Zeitgewinn für richtige Aufgaben
+const timePenaltyAtSkip = 10 * 1000; // Zeitverlust für das Überspringen einer Aufgabe
+
+/*
+Spielekonstanten
+ */
+const streakVisibleAfterXCorrect = 5; // nach 5 richtigen hintereinander wird dies gelobt
+
+
 /*
 Globale Arbeitsvariablen
  */
 let popupvisible; // Interne Variable, die anzeigt, ob das gameselection sichtbar ist oder nicht.
-let streak = 0; // Zähler der hintereinander korrekt gelösten Aufgaben
 let generatedTask; // Enthält die zu berechnende Aufgabe
 
+let correctAnswers = 0;
+let allGivenAnswers = 0;
+let streak = 0; // Zähler der hintereinander korrekt gelösten Aufgaben
+
+let timeRemaining = initialRoundTime;
+let interval; // Für das Polling der Zeit zuständig
+
+/*
+
+------------------------------------- automatischer Spielstart ----------------------------------------------------
+
+ */
 newTask(); // Befüllung von "generatedTask"
 changeBackgroundColor(""); // setzen des Standard-Hintergrundgradients
+startTicker(); // Start des Timers
 
-subtn.addEventListener("click", async event => {
-    const text = txt.value.trim();
-    const input = parseInt(text); // Inputkonvertierung zur Number um falsche Eingaben auszusortieren und schummeln vorzubeugen.
 
-    console.log(generatedTask.missing === text);
-    console.log(generatedTask.missing);
-    console.log(text);
+/*
 
-    if (input === generatedTask.missing || (generatedTask.blankIndex === 0 && text === generatedTask.missing)) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
-        newTask(); // Aufgabe erfolgreich gelöst - neue Aufgabe erstellen
-        changeBackgroundColor("correct");
-        if (++streak >= streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
-            helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
-        else
-            helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
-        show(); // gameselection anzeigen
-    } else if ((text !== "+" && text !== "-") && isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
-        helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
-        show(); // gameselection anzeigen
-    } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
-        changeBackgroundColor("incorrect");
-        help(); // Hilfestellung
-        show(); // gameselection anzeigen
+------------------------------------- EventListener ----------------------------------------------------
 
-        saveZehneruebergangScore(streak);
-        streak = 0; // Streak zurücksetzen, da die Antwort inkorrekt ist.
-
-        if (generatedTask.blankIndex === 0) {
-            txt.value = "";
-        }
-    }
-})
-
+ */
 document.addEventListener("keydown", (event) => {
     if (event.key === "Enter") { // Submit on Enter
         subtn.click(); // Button wird virtuell gedrückt
     }
 });
 
-document.addEventListener("click", () => {
+document.addEventListener("click", ({target}) => {
     txt.focus(); // Fokussierung des Textfensters, sobald geklickt wird, um es immer im Fokus zu halten
+
+    const button = target.closest('button');
+    // Das Klickelement wird gespeichert, sofern es wirklich ein Button ist
+
+
+    if (!button) return; // Falls kein button: Abbruch
+
+    switch (button.id) {
+        case 'subtn': // Eingabe und ihre Richtigkeit prüfen
+            const text = txt.value.trim();
+            const input = parseInt(text); // Inputkonvertierung zur Number um falsche Eingaben auszusortieren und schummeln vorzubeugen.
+
+            if (input === generatedTask.missing || (generatedTask.blankIndex === 0 && text === generatedTask.missing)) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
+                correctAnswer();
+            } else if ((text !== "+" && text !== "-") && isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
+                invalidAnswer();
+            } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
+                wrongAnswer();
+            }
+            break;
+
+        case 'restart': // Neustart des Spiels
+            timeRemaining = initialRoundTime;
+            correctAnswers = 0;
+            allGivenAnswers = 0;
+
+            hide(); // Hilfestellung verbergen
+            newTask(); // Neue Aufgabe erstellen
+            changeBackgroundColor(""); // normaler Hintergrund
+            gameScreen.classList.remove("hidden"); // GameScreen anzeigen
+            gameOverScreen.classList.add("hidden"); // GameOverScreen verbergen
+            break;
+
+        case 'skipbtn': // Aufgabe überspringen
+            newTask(); // Neue Aufgabe
+            deductTime(); // Zeitstrafe
+            changeBackgroundColor("incorrect"); // visueller Hinweis (rot)
+            break;
+
+        default:
+            break;
+    }
 });
+
+/*
+
+------------------------------------- Aufgabenaktionen ----------------------------------------------------
+
+ */
+
+/**
+ * Aktionen, falls die gegebene Antwort richtig ist.
+ */
+function correctAnswer() {
+    newTask(); // Aufgabe erfolgreich gelöst - neue Aufgabe erstellen
+    changeBackgroundColor("correct"); // Hintergrund auf grün ändern
+    show(); // Status anzeigen
+    addTime(); // Zeitbonus für eine korrekte Antwort
+
+    correctAnswers++; // Eine korrekte Antwort mehr
+    allGivenAnswers++; // Eine Antwort mehr
+    streak++;
+
+    if (streak >= streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
+        helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
+    else
+        helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
+}
+
+/**
+ * Aktionen, falls die gegebene Antwort falsch ist.
+ */
+function wrongAnswer() {
+    changeBackgroundColor("incorrect"); // Roter Hintergrund
+    help(); // Hilfestellung
+    show(); // Statusmeldung anzeigen
+
+    // + oder -, falls es + (oder -) nicht ist, wird aus Schnelligkeit das Zeichen entfernt
+    if (generatedTask.blankIndex === 0) {
+        txt.value = "";
+    }
+
+    allGivenAnswers++; // Eine Antwort ingesamt mehr gegebenen
+}
+
+/**
+ * Aktionen, falls die gegebene Antwort ungültig ist.
+ */
+function invalidAnswer() {
+    helpcorrect.innerHTML = "Eingabe ist keine gültige Nummer. Versuche erneut." // Statusausgabe
+    show(); // Statusmeldung anzeigen
+}
+
+/**
+ * Aktionen, falls die Zeit abgelaufen ist.
+ */
+function gameOver() {
+    timer.innerText = `${correctAnswers}/${allGivenAnswers}`;
+    clearInterval(interval); // Intervall wird gestoppt
+
+    changeBackgroundColor("incorrect") // roter Hintergrund
+    gameScreen.classList.add("hidden"); // Zahlen verbergen
+    gameOverScreen.classList.remove("hidden"); // Game Over + Buttons einblenden
+
+    saveZehneruebergangScore(correctAnswers); // Rekord eintragen
+}
+
+/*
+
+------------------------------------- Hilfestellung ----------------------------------------------------
+
+ */
 
 /**
  * Zeigt eine passende Hilfestellung zur derzeitigen Aufgabe an
  */
 function help() {
     // isNaN-Check o.ä. redundant, da newTask keine Errors wirft.
-    helpcorrect.innerHTML = `Inkorrekt! Versuche erneut.<br>Hilfestellung:<br><br>` // Statusausgabe
+    if (generatedTask.blankIndex !== 0) {
+        helpcorrect.innerHTML = `Inkorrekt! Versuche erneut.<br>Hilfestellung:<br><br>` // Statusausgabe
+    } else { // Keine Hilfestellung falls +/- Modus
+        helpcorrect.innerHTML = `Inkorrekt! Versuche erneut.` // Statusausgabe
+    }
 
     /*
         1. l+r=g
-
+            (1.0 operation missing)
             1.1 l missing
                 l=g-r
-
             1.2 r missing
                 r=g-l
-
             1.3 g missing
                 g=l+r
 
         2. l-r=g
-
+            (2.0 operation missing)
             2.1 l missing
                 l=g+r
-
             2.2 r missing
                 r=l-g
-
             2.3 g missing
                 g=l-r
      */
 
 
     switch (generatedTask.operation) {
-        case "+":
+        case 0:
+            break;
+        case "+": // Fall 1.x
             switch (generatedTask.blankIndex) {
-                case 0: // leftOperand fehlt
+                case 1: // leftOperand fehlt (Fall 1.1)
                     helpcorrect.innerHTML += `Berechne ${generatedTask.leftOperand}=${generatedTask.result}-${generatedTask.rightOperand}`;
                     break;
-                case 1: // rightOperand fehlt
+                case 2: // rightOperand fehlt (Fall 1.2)
                     helpcorrect.innerHTML += `Berechne ${generatedTask.rightOperand}=${generatedTask.result}-${generatedTask.leftOperand}`;
                     break;
-                case 2: // result fehlt
+                case 3: // result fehlt (Fall 1.3)
                     helpcorrect.innerHTML += `Berechne ${generatedTask.result}=${generatedTask.leftOperand}+${generatedTask.rightOperand}`;
                     break;
             }
             break;
-        case "-":
+        case "-": // Fall 2.x
             switch (generatedTask.blankIndex) {
-                case 0: // leftOperand fehlt
+                case 1: // leftOperand fehlt (Fall 2.1)
                     helpcorrect.innerHTML += `Berechne ${generatedTask.leftOperand}=${generatedTask.result}+${generatedTask.rightOperand}`;
                     break;
-                case 1: // rightOperand fehlt
+                case 2: // rightOperand fehlt (Fall 2.2)
                     helpcorrect.innerHTML += `Berechne ${generatedTask.rightOperand}=${generatedTask.leftOperand}-${generatedTask.result}`;
                     break;
-                case 2: // result fehlt
+                case 3: // result fehlt (Fall 2.3)
                     helpcorrect.innerHTML += `Berechne ${generatedTask.result}=${generatedTask.leftOperand}-${generatedTask.rightOperand}`;
                     break;
             }
@@ -126,6 +243,12 @@ function help() {
     helpcorrect.ariaLabel = helpcorrect.innerHTML; // Übernahme der Ausgabe für Screenreader
 }
 
+/*
+
+------------------------------------- DOM-Events ----------------------------------------------------
+
+ */
+
 /**
  * Zeigt das popupfeld im DOM
  */
@@ -133,6 +256,15 @@ function show() {
     if (popupvisible !== true)
         helpcorrect.classList.toggle("hidden"); // Hinweis wird sichtbar
     popupvisible = true
+}
+
+/**
+ * Versteckt das popupfeld im DOM
+ */
+function hide() {
+    if (popupvisible === true)
+        helpcorrect.classList.toggle("hidden"); // Hinweis wird unsichtbar
+    popupvisible = false
 }
 
 /**
@@ -163,15 +295,6 @@ function changeBackgroundColor(scenario) {
 }
 
 /**
- * Versteckt das popupfeld im DOM
- */
-function hide() {
-    if (popupvisible === true)
-        helpcorrect.classList.toggle("hidden"); // Hinweis wird unsichtbar
-    popupvisible = false
-}
-
-/**
  * Manipulation des angegebenen DIVs durch hinzufügen von Parapgraphen.
  * @param div das zu füllende DIVs
  * @param content der Inhalt mit dem das DIV gefüllt wird
@@ -189,6 +312,12 @@ function clear(div) { // Leert das übergebene div
     const list = document.querySelector(div); // Lokalisierung des divs
     list.innerHTML = ""; // Inhalt des divs bearbeiten (leeren)
 }
+
+/*
+
+------------------------------------- Aufgabenerstellung ----------------------------------------------------
+
+ */
 
 function createTask() {
     let operation = getRandomIntInclusive(0, 1); // Auswahl der Rechenoperation per (Pseudo-)Zufall
@@ -220,7 +349,7 @@ function createTask() {
     }
 
     operation = operation === 0 ? "+" : "-";
-    const blank = getRandomIntInclusive(0, 3) // Auswahl der fehlenden Zahl (Index) via Zufall
+    const blank =  getRandomIntInclusive(0, 3) // Auswahl der fehlenden Zahl (Index) via Zufall
     let missing; // Enthält den Wert der fehlenden Zahl
     switch (blank) {
         case 0: // Operator fehlt
@@ -309,6 +438,7 @@ function newTask() {
     txt.ariaLabel += `${generatedTask.result === "?" ? "x" : generatedTask.result}`;
 
     console.log(generatedTask);
+    // Debug-Zwecke
 }
 
 /**
@@ -321,4 +451,40 @@ function getRandomIntInclusive(min, max) { //
     min = Math.ceil(min); // Minimum auf eine Ganze Zahl abrunden
     max = Math.floor(max); // Maximum auf eine Ganze Zahl aufrunden
     return Math.floor(Math.random() * (max - min + 1)) + min; // Berechnung der Zufallszahl
+}
+
+/*
+
+------------------------------------- Zeitlogik ----------------------------------------------------
+
+ */
+
+/**
+ * Start des Timers
+ */
+function startTicker() {
+    clearInterval(interval); // Intervall wird gestoppt
+    interval = setInterval(() => {
+        timeRemaining -= 100;
+        updateTimer();
+    }, 100);
+    updateTimer();
+}
+
+function addTime() {
+    timeRemaining += timeGainPerCorrectAnswer;
+    updateTimer();
+}
+
+function deductTime() {
+    timeRemaining -= timePenaltyAtSkip;
+    updateTimer();
+}
+
+function updateTimer() {
+    if (timeRemaining >= 0) {
+        timer.innerText = `${Math.floor(timeRemaining / 1000)} - ${correctAnswers}/${allGivenAnswers}`;
+    } else { // Game Over!
+        gameOver();
+    }
 }
