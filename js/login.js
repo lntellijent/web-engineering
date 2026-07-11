@@ -3,16 +3,6 @@ const startButton = document.querySelector("#startButton");
 const welcomeTextField = document.querySelector("#welcomeText");
 const errorTextField = document.querySelector("#showError");
 
-document.addEventListener("click", () => {
-    username.focus();
-});
-
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        startButton.click();
-    }
-});
-
 document.querySelectorAll("button").forEach(button => {
     button.addEventListener("click", (event) => {
         switch (event.target.id) {
@@ -45,6 +35,16 @@ if (sessionStorage.getItem("playerName")) {
 } else {
     show("#nameinput")
     hide("#gameselection")
+    
+    document.addEventListener("click", () => {
+        username.focus();
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            startButton.click();
+        }
+    });
     username.focus();
 }
 
