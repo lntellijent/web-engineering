@@ -1,4 +1,4 @@
-import {saveZehneruebergangScore} from "./highscore.js";
+//import {saveZehneruebergangScore} from "./highscore.js";
 
 
 /*
@@ -169,7 +169,7 @@ function gameOver() {
     gameScreen.classList.add("hidden"); // Zahlen verbergen
     gameOverScreen.classList.remove("hidden"); // Game Over + Buttons einblenden
 
-    saveZehneruebergangScore(correctAnswers); // Rekord eintragen
+    // saveZehneruebergangScore(correctAnswers); // Rekord eintragen
 }
 
 /*
