@@ -298,6 +298,7 @@ function lowerTimerEverySecond() {
     }
 }
 
+
 function gameOver() {
     clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
     show("#gameoverScreen");
