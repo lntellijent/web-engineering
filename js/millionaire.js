@@ -1,4 +1,3 @@
-console.log("JS wurde geladen");
 let timer = 0.0;
 let interval;
 let timeRemaining;
@@ -262,6 +261,10 @@ function updateMoney(stage) {
 }
 
 function startRound() {
+
+    test.textContent =
+        `Hallo ${sessionStorage.getItem("playerName")}`;
+
     timeRemaining = 40000;
     if (stage <= 10) {
         stage +=1;
@@ -326,6 +329,25 @@ function hide(identifier) {
 
 function show(identifier) {
     document.querySelector(identifier).classList.remove("hidden");
+}
+
+function saveMillionaerScore(maxMoney) {
+
+    const entry = {
+        name: sessionStorage.getItem("playerName"),
+        maxMoney: maxMoney,
+        date: new Date().toLocaleDateString("de-DE")
+    };
+
+    let highscores =
+        JSON.parse(localStorage.getItem("millionaerScores")) || [];
+
+    highscores.push(entry);
+
+    localStorage.setItem(
+        "millionaerScores",
+        JSON.stringify(highscores)
+    );
 }
 
 
