@@ -10,6 +10,7 @@ function parseMoney(value) {
     );
 }
 
+
 function showMillionaerHighscores() {
 
     const highscores =

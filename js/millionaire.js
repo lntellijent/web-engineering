@@ -131,6 +131,7 @@ function generateQuestion(stage) {
         let task = masterTask();
         document.querySelector("#frage").innerText = task[0] + "+" + task[1] + "*" + task[2] + " = ?";
         fillAwnsers(task[3])
+        correctAwnser = task[3];
     }
 }
 
@@ -262,9 +263,6 @@ function updateMoney(stage) {
 
 function startRound() {
 
-    test.textContent =
-        `Hallo ${sessionStorage.getItem("playerName")}`;
-
     timeRemaining = 40000;
     if (stage <= 10) {
         stage +=1;
@@ -300,7 +298,9 @@ function lowerTimerEverySecond() {
     }
 }
 
+
 function gameOver() {
+    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
     show("#gameoverScreen");
     saveMillionaerScore(moneystage[stage -1]);
 }

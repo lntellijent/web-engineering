@@ -64,6 +64,7 @@ function confirmName() {
     showWelcomeMessage()
 }
 
+
 function showWelcomeMessage() {
     welcomeTextField.textContent =
         `Hallo ${sessionStorage.getItem("playerName")}, was willst du spielen?`;
