@@ -33,4 +33,6 @@ function showMillionaerHighscores() {
 
 }
 
-showMillionaerHighscores();
+if(document.querySelector("#twoScoreboards")) {
+    showMillionaerHighscores();
+}
