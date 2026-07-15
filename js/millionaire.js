@@ -274,11 +274,6 @@ function startRound() {
     }
 } 
 
-function winGame() {
-    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
-    show("#winningScreen");
-    saveMillionaerScore("1.000.000 €");
-}
 
 function startTicker() {
     clearInterval(interval)
@@ -299,6 +294,13 @@ function lowerTimerEverySecond() {
         gameOver()
     }
 }
+
+function winGame() {
+    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
+    show("#winningScreen");
+    saveMillionaerScore("1.000.000 €");
+}
+
 
 
 function gameOver() {
