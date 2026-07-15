@@ -275,7 +275,9 @@ function startRound() {
 } 
 
 function winGame() {
-    saveMillionaerScore(moneystage[stage -1]);
+    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
+    show("#winningScreen");
+    saveMillionaerScore("1.000.000 €");
 }
 
 function startTicker() {
@@ -318,6 +320,7 @@ function startGame() {
     stage = 0;
     timeRemaining = 40000;
     hide("#gameoverScreen");
+    hide("#winningScreen")
     startTicker();
     resertJokers();
     startRound();
