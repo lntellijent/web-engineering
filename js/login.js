@@ -36,7 +36,7 @@ if (sessionStorage.getItem("playerName")) {
     show("#nameinput")
     hide("#gameselection")
     
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", () => {
         username.focus();
     });
     username.focus();
