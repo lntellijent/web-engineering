@@ -46,6 +46,11 @@ let interval; // Für das Polling der Zeit zuständig
 ------------------------------------- automatischer Spielstart ----------------------------------------------------
 
  */
+
+// Falls kein Spielername eingetragen ist, redirecte auf die Anmeldeseite
+if (!sessionStorage.getItem("playerName"))
+    window.location.pathname = 'web-engineering/html/main.html';
+
 newTask(); // Befüllung von "generatedTask"
 changeBackgroundColor(""); // setzen des Standard-Hintergrundgradients
 startTicker(); // Start des Timers
@@ -438,7 +443,7 @@ function newTask() {
     txt.ariaLabel += `${generatedTask.relation}`;
     txt.ariaLabel += `${generatedTask.result === "?" ? "x" : generatedTask.result}`;
 
-    console.log(generatedTask);
+    // console.log(generatedTask);
     // Debug-Zwecke
 }
 

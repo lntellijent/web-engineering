@@ -351,4 +351,8 @@ function saveMillionaerScore(maxMoney) {
 }
 
 
+// Falls kein Spielername eingetragen ist, redirecte auf die Anmeldeseite
+if (!sessionStorage.getItem("playerName"))
+    window.location.pathname = 'web-engineering/html/main.html';
+
 startGame()
