@@ -1,5 +1,3 @@
-//import {saveZehneruebergangScore} from "./highscore.js";
-
 
 /*
 wichtige HTML-Elemente
@@ -174,7 +172,7 @@ function gameOver() {
     gameScreen.classList.add("hidden"); // Zahlen verbergen
     gameOverScreen.classList.remove("hidden"); // Game Over + Buttons einblenden
 
-    // saveZehneruebergangScore(correctAnswers); // Rekord eintragen
+    saveZehneruebergangScore(correctAnswers, allGivenAnswers); // Rekord eintragen
 }
 
 /*
@@ -493,4 +491,34 @@ function updateTimer() {
     } else { // Game Over!
         gameOver();
     }
+}
+
+/*
+
+------------------------------------- Highscore ----------------------------------------------------
+
+ */
+
+function saveZehneruebergangScore(correctAnswers, givenAwnsers) {
+
+    const entry = {
+        name: sessionStorage.getItem("playerName"),
+        correctAnswers: correctAnswers,
+        givenAwnsers: givenAwnsers,
+        score: givenAwnsers > 0
+            ? (correctAnswers / givenAwnsers * 100).toFixed(1) + "%"
+            : "0%",
+        date: new Date().toLocaleDateString("de-DE")
+    };
+
+    let highscores =
+        JSON.parse(localStorage.getItem("zehneruebergangScores")) || [];
+
+    highscores.push(entry);
+
+    localStorage.setItem(
+        "zehneruebergangScores",
+        JSON.stringify(highscores)
+    );
+
 }
