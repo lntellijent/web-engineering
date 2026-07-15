@@ -52,18 +52,34 @@
             <div class="jokerBox">
                 <h2>Publikumsjoker</h2>
 
-                <p>A: <span id="publicA"></span>%</p>
-                <p>B: <span id="publicB"></span>%</p>
-                <p>C: <span id="publicC"></span>%</p>
-                <p>D: <span id="publicD"></span>%</p>
+                <div class="publicResults">
+                    <div class="publicAnswer">
+                        A: <span id="publicA"></span>%
+                    </div>
 
-                <button onclick="hide('#jokerPublicScreen')">Verstanden</button>
+                    <div class="publicAnswer">
+                        B: <span id="publicB"></span>%
+                    </div>
+
+                    <div class="publicAnswer">
+                        C: <span id="publicC"></span>%
+                    </div>
+
+                    <div class="publicAnswer">
+                        D: <span id="publicD"></span>%
+                    </div>
+                </div>
+
+                <button onclick="hide('#jokerPublicScreen')">
+                    Verstanden
+                </button>
             </div>
         </div>
 
 
         
-        <h1 id="test">Wer wird Mathe-Millionär</h1>
+        <h2>Wer wird</h2>
+        <h1>Mathe-Millionär</h1>
 
         <div class="game-layout">
 
@@ -78,8 +94,10 @@
             </div>
 
             <div class="right-panel">
-                <p>Du hast gerade</p>
-                <div id="moneyfield"></div>
+                <div class="money-box">
+                    <div class="money-label">Du hast gerade</div>
+                    <div id="moneyfield">0 €</div>
+                </div>
             </div>
         </div>
 

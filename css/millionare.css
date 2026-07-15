@@ -1,31 +1,77 @@
 @import "color.css";
 
-* {
-    color: var(--text);
-    background-color: var(--background);
+/* ==========================================================
+   Reset / Basics
+   ========================================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
+body {
+    margin: 0;
+    background: radial-gradient(
+        circle,
+        #4d8dff 0%,
+        #1e4fa8 50%,
+        #0b1f52 100%
+    );
+}
+
+/* ==========================================================
+   Typografie
+   ========================================================== */
 h1 {
-    color: var(--primary);
+    color: white;
     text-align: center;
     font-size: xx-large;
 }
 
-body {
-    width: 90%;
-    margin: auto;
-}
-
-#frage {
-    width: 60%;
-    margin: 2rem auto;
+h2 {
+    color: white;
     text-align: center;
-    font-size: x-large;
-    background-color: var(--primary);
-    border: 3px solid var(--accent);
-    border-radius: 18px;
+    margin-top: 10px;
 }
 
+/* ==========================================================
+   Utility
+   ========================================================== */
+.hidden {
+    display: none !important;
+}
+
+/* ==========================================================
+   Frage-Box
+   ========================================================== */
+#frage {
+    position: relative;
+
+    width: 65%;
+    margin: 2rem auto;
+    padding: 18px 40px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    color: orange;
+    font-size: 2rem;
+    font-weight: bold;
+
+    background: #18265f;
+
+    border: 3px solid orange;
+
+    box-shadow:
+        0 0 18px rgba(79,127,255,.25),
+        inset 0 0 20px rgba(255,255,255,.05);
+}
+
+/* ==========================================================
+   Antwort-Boxen
+   ========================================================== */
 .awnserboxes {
     width: 80%;
     margin: auto;
@@ -36,21 +82,47 @@ body {
 
 .awnserbox {
     padding: 1rem;
-    background-color: var(--primary);
-    border: 3px solid var(--accent);
-    border-radius: 10px;
-    text-align: center;
-    font-size: large;
-}
- 
-@media (max-width: 600px) {
-    .awnserboxes {
-        grid-template-columns: 1fr;
-    }
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 60px;
+
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 500;
+
+    background: linear-gradient(
+        180deg,
+        #1d2d72 0%,
+        #16235b 100%
+    );
+
+    border: 2px solid #4f7fff;
+    border-radius: 14px;
+
+    box-shadow:
+        0 0 12px rgba(79,127,255,.18),
+        inset 0 0 10px rgba(255,255,255,.05);
+
+    cursor: pointer;
+    transition: all .15s ease;
 }
 
-/*---------Obere Sektion---------*/
+.awnserbox:hover {
+    border-color: #74a2ff;
 
+    box-shadow:
+        0 0 18px rgba(116,162,255,.35),
+        inset 0 0 10px rgba(255,255,255,.08);
+
+    transform: translateY(-2px);
+}
+
+/* ==========================================================
+   Obere Sektion (Joker / Timer / Geld)
+   ========================================================== */
 .game-layout {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -60,6 +132,7 @@ body {
     gap: 20px;
 }
 
+/* ---- Linkes Panel: Joker ---- */
 .left-panel {
     display: flex;
     flex-direction: column;
@@ -67,9 +140,29 @@ body {
 }
 
 .left-panel button {
-    padding: 10px;
+    position: relative;
+
+    width: 180px;
+    height: 52px;
+
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    text-transform: uppercase;
+
+    background: rgba(5, 10, 40, 0.95);
+
+    border-radius: 999px;
+
+    cursor: pointer;
+
+    transition: transform .15s ease,
+                box-shadow .15s ease;
+
+    z-index: 0;
 }
 
+/* ---- Mittleres Panel: Timer ---- */
 .middle-panel {
     display: flex;
     justify-content: center;
@@ -77,139 +170,349 @@ body {
 }
 
 #timer {
-    text-align:center;
+    text-align: center;
     font-size: xxx-large;
     font-weight: bolder;
     color: var(--text);
     padding-bottom: 100px;
 }
 
-.right-panel table {
-    width: 100%;
-    border-collapse: collapse;
+/* ---- Rechtes Panel: Geldstand ---- */
+.right-panel {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-.right-panel td {
-    border: 1px solid white;
-    padding: 4px;
+.money-box {
+    min-width: 220px;
+    padding: 18px 22px;
+
     text-align: center;
+
+    background: rgba(10, 18, 55, 0.85);
+
+    border: 2px solid #4f7fff;
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 18px rgba(70,120,255,.25);
 }
 
-.hidden {
-    display: none !important;
+.money-label {
+    background: transparent;
+
+    color: #d8e5ff;
+    font-size: 0.95rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+
+    margin-bottom: 10px;
 }
 
 #moneyfield {
-    color: red;
+    background: transparent;
+
+    color: #ffd84a;
+    font-size: 2rem;
+    font-weight: bold;
+
+    text-shadow:
+        0 0 10px rgba(255,216,74,.35);
 }
 
-/*---------------Game Over Screen----------*/
+/* ==========================================================
+   Game Over / Gewonnen-Screen
+   ========================================================== */
 #gameoverScreen,
 #winningScreen {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  background: rgba(15, 15, 20, 0.75);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  text-align: center;
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 30px;
+
+    background: rgba(5, 10, 30, 0.75);
+    backdrop-filter: blur(8px);
+
+    z-index: 1000;
 }
-
-
 
 #gameoverScreen h1,
 #winningScreen h1 {
-  color: #fff;
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin: 0;
-  padding: 32px 48px;
-  background: #1a1a1f;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 0;
+    padding: 28px 60px;
+
+    color: #ffb347;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+
+    background: linear-gradient(
+        180deg,
+        #1d2d72,
+        #16235b
+    );
+
+    border: 2px solid #4f7fff;
+    border-radius: 22px;
+
+    box-shadow:
+        0 0 20px rgba(79,127,255,.3),
+        inset 0 0 12px rgba(255,255,255,.05);
+
+    text-shadow: 0 0 12px rgba(255,179,71,.4);
 }
 
 .gameover-buttons {
-  display: flex;
-  gap: 16px;
+    display: flex;
+    gap: 20px;
 }
 
 .gameover-buttons button {
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #fff;
-  background: #2a2a32;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
+    min-width: 170px;
+    padding: 14px 26px;
+
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+
+    background: linear-gradient(
+        180deg,
+        #1d2d72,
+        #16235b
+    );
+
+    border: 2px solid #4f7fff;
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    transition: .15s ease;
+
+    box-shadow:
+        0 0 12px rgba(79,127,255,.2);
 }
 
 .gameover-buttons button:hover {
-  background: #38383f;
+    transform: translateY(-2px);
+
+    border-color: #7da8ff;
+
+    box-shadow:
+        0 0 18px rgba(125,168,255,.35);
 }
 
-
-
-
-
-#jokerCallScreen {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    z-index: 9999;
-}
-
-.jokerCallBox {
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
-    width: 400px;
-}
-
-/*------------Public Joker------------*/
-
+/* ==========================================================
+   Telefonjoker
+   ========================================================== */
+#jokerCallScreen,
 #jokerPublicScreen {
     position: fixed;
     inset: 0;
-    background-color: rgba(0,0,0,0.7);
 
     display: flex;
     justify-content: center;
     align-items: center;
 
+    background: rgba(5, 10, 30, 0.75);
+    backdrop-filter: blur(8px);
+
     z-index: 9999;
 }
 
+.jokerCallBox,
 .jokerBox {
-    background: white;
+    min-width: 400px;
     padding: 30px;
-    border-radius: 20px;
+
     text-align: center;
-    min-width: 350px;
+    color: white;
+
+    background: linear-gradient(
+        180deg,
+        #1d2d72 0%,
+        #16235b 100%
+    );
+
+    border: 2px solid #4f7fff;
+    border-radius: 20px;
+
+    box-shadow:
+        0 0 20px rgba(79,127,255,.3),
+        inset 0 0 12px rgba(255,255,255,.05);
 }
 
+.jokerCallBox h2,
 .jokerBox h2 {
     margin-top: 0;
+    color: #ffd84a;
+
+    text-shadow:
+        0 0 10px rgba(255,216,74,.35);
 }
 
+.jokerCallBox p,
 .jokerBox p {
-    font-size: 1.3rem;
+    color: white;
+    font-size: 1.2rem;
 }
 
+.jokerCallBox button,
 .jokerBox button {
     margin-top: 20px;
-    padding: 10px 20px;
+    padding: 12px 24px;
+
+    color: white;
+    font-weight: bold;
+
+    background: linear-gradient(
+        180deg,
+        #1d2d72,
+        #16235b
+    );
+
+    border: 2px solid #4f7fff;
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition: .15s ease;
 }
 
+.jokerCallBox button:hover,
+.jokerBox button:hover {
+    transform: translateY(-2px);
+
+    border-color: #7da8ff;
+
+    box-shadow:
+        0 0 18px rgba(125,168,255,.35);
+}
+
+
+/* ==========================================================
+   Publikumsjoker
+   ========================================================== */
+
+.publicResults {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.publicAnswer {
+    padding: 15px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    font-size: 1.3rem;
+    font-weight: bold;
+
+    background: linear-gradient(
+        180deg,
+        #1d2d72 0%,
+        #16235b 100%
+    );
+
+    border: 2px solid #4f7fff;
+    border-radius: 14px;
+
+    box-shadow:
+        0 0 12px rgba(79,127,255,.2),
+        inset 0 0 8px rgba(255,255,255,.05);
+}
+
+/* ==========================================================
+   Responsive / Mobile
+   ========================================================== */
+@media (max-width: 600px) {
+    html, body {
+        overflow-x: hidden;
+    }
+
+    .awnserboxes {
+        grid-template-columns: 1fr;
+    }
+
+    /* Panels untereinander statt nebeneinander */
+    .game-layout {
+        grid-template-columns: 1fr;
+        width: 95%;
+        text-align: center;
+    }
+
+    .left-panel {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .left-panel button {
+        width: auto;
+        flex: 1 1 45%;
+        min-width: 130px;
+        height: 44px;
+        font-size: 0.85rem;
+    }
+
+    #timer {
+        font-size: 3rem;
+        padding-bottom: 20px;
+    }
+
+    .right-panel {
+        justify-content: center;
+    }
+
+    .money-box {
+        min-width: unset;
+        width: 100%;
+    }
+
+    #frage {
+        width: 90%;
+        padding: 14px 16px;
+        font-size: 1.3rem;
+    }
+
+    .awnserboxes {
+        width: 90%;
+    }
+
+    .awnserbox {
+        font-size: 1rem;
+        min-height: 50px;
+    }
+
+    #gameoverScreen h1,
+    #winningScreen h1 {
+        padding: 20px 24px;
+        font-size: 1.8rem;
+        width: 85%;
+    }
+
+    .gameover-buttons {
+        flex-direction: column;
+        width: 70%;
+    }
+
+    .gameover-buttons button {
+        width: 100%;
+    }
+
+    .jokerCallBox,
+    .jokerBox {
+        width: 90%;
+        min-width: unset;
+        padding: 20px;
+    }
+}
