@@ -11,15 +11,15 @@ document.querySelectorAll("button").forEach(button => {
                 break;
 
             case "millionareButton":
-                startGame('millionare.html');
+                navigatePages('millionare.html');
                 break;
 
             case "zehneruebergangButton":
-                startGame('zehneruebergang.html')
+                navigatePages('zehneruebergang.html')
                 break;
 
             case "highscoreButton":
-                startGame('highscore.html')
+                navigatePages('highscore.html')
                 break;
 
             default:
@@ -39,13 +39,20 @@ if (sessionStorage.getItem("playerName")) {
     document.addEventListener("click", () => {
         username.focus();
     });
+    username.focus();
 
     document.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
+            event.preventDefault();
             startButton.click();
         }
     });
-    username.focus();
+
+    // Sicherheitshalber ungewolltes Verhalten abfangen
+    document.querySelector("#loginform")
+        .addEventListener("submit", (event) => {
+            event.preventDefault();
+        });
 }
 
 function confirmName() {
@@ -53,15 +60,14 @@ function confirmName() {
 
     if (!regex.test(username.value.trim())) {
         errorTextField.textContent = "Gebe einen gültigen Namen ein!"
-        return;
+    } else {
+        sessionStorage.setItem("playerName", username.value.trim());
+
+        show("#gameselection");
+        hide("#nameinput");
+
+        showWelcomeMessage();
     }
-
-    sessionStorage.setItem("playerName", username.value.trim());
-
-    show("#gameselection")
-    hide("#nameinput")
-
-    showWelcomeMessage()
 }
 
 
@@ -70,7 +76,7 @@ function showWelcomeMessage() {
         `Hallo ${sessionStorage.getItem("playerName")}, was willst du spielen?`;
 }
 
-function startGame(page) {
+function navigatePages(page) {
     window.location.href = page;
 }
 

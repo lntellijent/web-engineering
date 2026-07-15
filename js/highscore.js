@@ -63,3 +63,15 @@ function showZehneruebergangHighscores() {
 
 showMillionaerHighscores();
 showZehneruebergangHighscores()
+/*
+ Element mit ID "twoScoreBoards" einzigartig im ganzen Projekt, existiert nur in highscores.html
+ D.h. ist es vorhanden ist es ungleich null und führt entsprechenden Code aus
+ */
+
+if(document.querySelector("#twoScoreboards")) {
+    // Falls kein Spielername eingetragen ist, redirecte auf die Anmeldeseite
+    if (!sessionStorage.getItem("playerName"))
+        window.location.pathname = 'web-engineering/html/main.html';
+
+    showMillionaerHighscores();
+}
