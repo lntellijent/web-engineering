@@ -61,7 +61,7 @@ function showZehneruebergangHighscores() {
 
 }
 
-showMillionaerHighscores();
+
 showZehneruebergangHighscores()
 /*
  Element mit ID "twoScoreBoards" einzigartig im ganzen Projekt, existiert nur in highscores.html

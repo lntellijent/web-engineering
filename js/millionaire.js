@@ -32,6 +32,7 @@ let jokerAnswer;
 function startGame() {
     stage = 0;  //stage als zustandsstufe um aktuelles geld usw. zu berechnen
     timeRemaining = 40000;  // 40sek pro Aufgabe
+    document.querySelector("#playerNameTag").innerText = "Wird " + sessionStorage.getItem("playerName");
     hide("#gameoverScreen");
     hide("#winningScreen")
     startTicker();
