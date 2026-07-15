@@ -113,7 +113,7 @@
     background: var(--incorrect);
 }
 
-button {
+#input button {
     padding: 15px 30px;
     border: none;
     border-radius: 10px;
@@ -125,7 +125,7 @@ button {
     min-height: 50px;
 }
 
-button:hover {
+#input button:hover {
     transform: translateY(-2px);
     background: #4f46e5;
 }

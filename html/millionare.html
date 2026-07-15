@@ -1,117 +1,101 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" href="../css/millionare.css" />
-        <title>Mathe Millionär</title>
+<a href="main.html" class="menu-button">
+    Menü
+</a>
 
-    </head>
-    <body>
-        <a href="main.html" class="menu-button">
-            Menü
+<div class="hidden" id="gameoverScreen">
+    <h1>Game Over</h1>
+
+    <div class="gameover-buttons">
+        <a href="main.html">
+            <button>Beenden</button>
         </a>
 
-        <div class="hidden" id="gameoverScreen">
-            <h1>Game Over</h1>
+        <button onclick="startGame()">Noch einmal!</button>
+    </div>
+</div>
 
-            <div class="gameover-buttons">
-                <a href="main.html">
-                    <button>Beenden</button>
-                </a>
+<div class="hidden" id="winningScreen">
+    <h1>Du bist Millionär</h1>
 
-                <button onclick="startGame()">Noch einmal!</button>
+    <div class="gameover-buttons">
+        <a href="main.html">
+            <button>Beenden</button>
+        </a>
+
+        <button onclick="startGame()">Noch einmal!</button>
+    </div>
+</div>
+
+<div class="hidden" id="jokerCallScreen">
+    <div class="jokerCallBox">
+        <h2>Telefonjoker</h2>
+
+        <p id="jokerCallText"></p>
+
+        <button onclick="closeJokerCall()">
+            Verstanden
+        </button>
+    </div>
+</div>
+
+
+<div class="hidden" id="jokerPublicScreen">
+    <div class="jokerBox">
+        <h2>Publikumsjoker</h2>
+
+        <div class="publicResults">
+            <div class="publicAnswer">
+                A: <span id="publicA"></span>%
+            </div>
+
+            <div class="publicAnswer">
+                B: <span id="publicB"></span>%
+            </div>
+
+            <div class="publicAnswer">
+                C: <span id="publicC"></span>%
+            </div>
+
+            <div class="publicAnswer">
+                D: <span id="publicD"></span>%
             </div>
         </div>
 
-        <div class="hidden" id="winningScreen">
-            <h1>Du bist Millionär</h1>
+        <button onclick="hide('#jokerPublicScreen')">
+            Verstanden
+        </button>
+    </div>
+</div>
 
-            <div class="gameover-buttons">
-                <a href="main.html">
-                    <button>Beenden</button>
-                </a>
 
-                <button onclick="startGame()">Noch einmal!</button>
-            </div>
+<h2>Wer wird</h2>
+<h1>Mathe-Millionär</h1>
+
+<div class="game-layout">
+
+    <div class="left-panel">
+        <button id="jokerFifty" onclick="jokerFifty()">50 : 50</button>
+        <button id="jokerPublic" onclick="jokerPublic()">Publikum</button>
+        <button id="jokerCall" onclick="jokerCall()">Telefon</button>
+    </div>
+
+    <div class="middle-panel">
+        <div id="timer"></div>
+    </div>
+
+    <div class="right-panel">
+        <div class="money-box">
+            <div class="money-label">Du hast gerade</div>
+            <div id="moneyfield">0 €</div>
         </div>
-
-        <div class="hidden" id="jokerCallScreen">
-            <div class="jokerCallBox">
-                <h2>Telefonjoker</h2>
-
-                <p id="jokerCallText"></p>
-
-                <button onclick="closeJokerCall()">
-                    Verstanden
-                </button>
-            </div>
-        </div>
-
-        
-        <div class="hidden" id="jokerPublicScreen">
-            <div class="jokerBox">
-                <h2>Publikumsjoker</h2>
-
-                <div class="publicResults">
-                    <div class="publicAnswer">
-                        A: <span id="publicA"></span>%
-                    </div>
-
-                    <div class="publicAnswer">
-                        B: <span id="publicB"></span>%
-                    </div>
-
-                    <div class="publicAnswer">
-                        C: <span id="publicC"></span>%
-                    </div>
-
-                    <div class="publicAnswer">
-                        D: <span id="publicD"></span>%
-                    </div>
-                </div>
-
-                <button onclick="hide('#jokerPublicScreen')">
-                    Verstanden
-                </button>
-            </div>
-        </div>
+    </div>
+</div>
 
 
-        
-        <h2>Wer wird</h2>
-        <h1>Mathe-Millionär</h1>
-
-        <div class="game-layout">
-
-            <div class="left-panel">
-                <button id="jokerFifty" onclick="jokerFifty()">50 : 50</button>
-                <button id="jokerPublic" onclick="jokerPublic()">Publikum</button>
-                <button id="jokerCall" onclick="jokerCall()">Telefon</button>
-            </div>
-
-            <div class="middle-panel">
-                <div id="timer"></div>
-            </div>
-
-            <div class="right-panel">
-                <div class="money-box">
-                    <div class="money-label">Du hast gerade</div>
-                    <div id="moneyfield">0 €</div>
-                </div>
-            </div>
-        </div>
-
-     
-        <div id="frage"></div>
-        <div class="awnserboxes">
-            <div id="awnserbox1" class="awnserbox" onclick="checkAnswer(this)"></div>
-            <div id="awnserbox2" class="awnserbox" onclick="checkAnswer(this)"></div>
-            <div id="awnserbox3" class="awnserbox" onclick="checkAnswer(this)"></div>
-            <div id="awnserbox4" class="awnserbox" onclick="checkAnswer(this)"></div>
-        </div>
-
-
-        <script src="../js/millionaire.js"></script>
-        <script type="module" src="../js/highscore.js"></script>
-    </body>
-</html>
+<div id="frage"></div>
+<div class="awnserboxes">
+    <div id="awnserbox1" class="awnserbox" onclick="checkAnswer(this)"></div>
+    <div id="awnserbox2" class="awnserbox" onclick="checkAnswer(this)"></div>
+    <div id="awnserbox3" class="awnserbox" onclick="checkAnswer(this)"></div>
+    <div id="awnserbox4" class="awnserbox" onclick="checkAnswer(this)"></div>
+</div>

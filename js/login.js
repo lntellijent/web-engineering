@@ -1,61 +1,71 @@
-const username = document.querySelector("#username");
-const startButton = document.querySelector("#startButton");
-const welcomeTextField = document.querySelector("#welcomeText");
-const errorTextField = document.querySelector("#showError");
 
-document.querySelectorAll("button").forEach(button => {
-    button.addEventListener("click", (event) => {
-        switch (event.target.id) {
-            case "startButton":
-                confirmName();
-                break;
 
-            case "millionareButton":
-                navigatePages('millionare.html');
-                break;
+function initLoginPage() {
 
-            case "zehneruebergangButton":
-                navigatePages('zehneruebergang.html')
-                break;
+    const username = document.querySelector("#username");
 
-            case "highscoreButton":
-                navigatePages('highscore.html')
-                break;
+    if (!username) {
+        return;
+    }
 
-            default:
-                console.log("Unbekannter Button");
-        }
-    });
-});
+    const startButton = document.querySelector("#startButton");
+    const welcomeTextField = document.querySelector("#welcomeText");
+    const errorTextField = document.querySelector("#showError");
 
-if (sessionStorage.getItem("playerName")) {
-    show("#gameselection")
-    hide("#nameinput")
-    showWelcomeMessage()
-} else {
-    show("#nameinput")
-    hide("#gameselection")
-    
-    document.addEventListener("click", () => {
-        username.focus();
-    });
-    username.focus();
+    document.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", (event) => {
+            switch (event.target.id) {
+                case "startButton":
+                    confirmName(username, errorTextField, welcomeTextField);
+                    break;
 
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            startButton.click();
-        }
-    });
+                case "millionareButton":
+                    navigatePages('millionare.html');
+                    break;
 
-    // Sicherheitshalber ungewolltes Verhalten abfangen
-    document.querySelector("#loginform")
-        .addEventListener("submit", (event) => {
-            event.preventDefault();
+                case "zehneruebergangButton":
+                    navigatePages('html/zehneruebergang.html')
+                    break;
+
+                case "highscoreButton":
+                    navigatePages('highscore.html')
+                    break;
+
+                default:
+                    console.log("Unbekannter Button");
+            }
         });
+    });
+
+    if (sessionStorage.getItem("playerName")) {
+        show("#gameselection")
+        hide("#nameinput")
+        showWelcomeMessage()
+    } else {
+        show("#nameinput")
+        hide("#gameselection")
+
+        document.addEventListener("click", () => {
+            username.focus();
+        });
+        username.focus();
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                startButton.click();
+            }
+        });
+
+        // Sicherheitshalber ungewolltes Verhalten abfangen
+        document.querySelector("#loginform")
+            .addEventListener("submit", (event) => {
+                event.preventDefault();
+            });
+    }
 }
 
-function confirmName() {
+function confirmName(username, errorTextField, welcomeTextField) {
     const regex = /^[\p{L}\p{N}]{1,20}$/u;
 
     if (!regex.test(username.value.trim())) {
@@ -66,12 +76,12 @@ function confirmName() {
         show("#gameselection");
         hide("#nameinput");
 
-        showWelcomeMessage();
+        showWelcomeMessage(welcomeTextField);
     }
 }
 
 
-function showWelcomeMessage() {
+function showWelcomeMessage(welcomeTextField) {
     welcomeTextField.textContent =
         `Hallo ${sessionStorage.getItem("playerName")}, was willst du spielen?`;
 }
@@ -81,9 +91,17 @@ function navigatePages(page) {
 }
 
 function hide(identifier) {
-    document.querySelector(identifier).classList.add("hidden");
+    const element = document.querySelector(identifier);
+
+    if (element) {
+        element.classList.add("hidden");
+    }
 }
 
 function show(identifier) {
-    document.querySelector(identifier).classList.remove("hidden");
+    const element = document.querySelector(identifier);
+
+    if (element) {
+        element.classList.remove("hidden");
+    }
 }

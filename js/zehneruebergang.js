@@ -3,14 +3,14 @@
 
 /*
 wichtige HTML-Elemente
- */
-const subtn = document.querySelector("#subtn"); // "Submit"-Button
-const txt = document.querySelector("#userInput"); // Textarea als Zahleninput
-const helpcorrect = document.querySelector("#helpcorrectfield"); // Feld für Hilfestellung bei Fehlern oder Rückmeldung für die Korrektheit
-const body = document.querySelector("body"); // body für Hintergrundmanipulation
-const timer = document.querySelector("#timer");
-const gameScreen = document.querySelector("#gameScreen");
-const gameOverScreen = document.querySelector("#gameOverScreen");
+*/
+let subtn;
+let txt;
+let helpcorrect;
+let body;
+let timer;
+let gameScreen;
+let gameOverScreen;
 
 
 /*
@@ -43,76 +43,89 @@ let interval; // Für das Polling der Zeit zuständig
 
 /*
 
-------------------------------------- automatischer Spielstart ----------------------------------------------------
+------------------------------------- bei Spielstart ----------------------------------------------------
 
  */
 
-// Falls kein Spielername eingetragen ist, redirecte auf die Anmeldeseite
-if (!sessionStorage.getItem("playerName"))
-    window.location.pathname = 'web-engineering/html/main.html';
+function initializeZehneruebergang() {
+    subtn = document.querySelector("#subtn"); // "Submit"-Button
+    txt = document.querySelector("#userInput"); // Textarea als Zahleninput
+    helpcorrect = document.querySelector("#helpcorrectfield"); // Feld für Hilfestellung bei Fehlern oder Rückmeldung für die Korrektheit
+    body = document.querySelector("body"); // body für Hintergrundmanipulation
+    timer = document.querySelector("#timer");
+    gameScreen = document.querySelector("#gameScreen");
+    gameOverScreen = document.querySelector("#gameOverScreen");
 
-newTask(); // Befüllung von "generatedTask"
-changeBackgroundColor(""); // setzen des Standard-Hintergrundgradients
-startTicker(); // Start des Timers
+
+    // Falls kein Spielername eingetragen ist, redirecte auf die Anmeldeseite
+    if (!sessionStorage.getItem("playerName"))
+        navigate("html/zehneruebergang.html");
 
 
-/*
+    newTask(generatedTask, txt); // Befüllung von "generatedTask"
+    changeBackgroundColor("", body); // setzen des Standard-Hintergrundgradients
+    startTicker(); // Start des Timers
+
+
+    /*
 
 ------------------------------------- EventListener ----------------------------------------------------
 
  */
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") { // Submit on Enter
-        subtn.click(); // Button wird virtuell gedrückt
-    }
-});
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") { // Submit on Enter
+            subtn.click(); // Button wird virtuell gedrückt
+        }
+    });
 
-document.addEventListener("click", ({target}) => {
-    txt.focus(); // Fokussierung des Textfensters, sobald geklickt wird, um es immer im Fokus zu halten
+    document.addEventListener("click", ({target}) => {
+        txt.focus(); // Fokussierung des Textfensters, sobald geklickt wird, um es immer im Fokus zu halten
 
-    const button = target.closest('button');
-    // Das Klickelement wird gespeichert, sofern es wirklich ein Button ist
+        const button = target.closest('button');
+        // Das Klickelement wird gespeichert, sofern es wirklich ein Button ist
 
 
-    if (!button) return; // Falls kein button: Abbruch
+        if (!button) return; // Falls kein button: Abbruch
 
-    switch (button.id) {
-        case 'subtn': // Eingabe und ihre Richtigkeit prüfen
-            const text = txt.value.trim();
-            const input = parseInt(text); // Inputkonvertierung zur Number um falsche Eingaben auszusortieren und schummeln vorzubeugen.
+        switch (button.id) {
+            case 'subtn': // Eingabe und ihre Richtigkeit prüfen
+                const text = txt.value.trim();
+                const input = parseInt(text); // Inputkonvertierung zur Number um falsche Eingaben auszusortieren und schummeln vorzubeugen.
 
-            if (input === generatedTask.missing || (generatedTask.blankIndex === 0 && text === generatedTask.missing)) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
-                correctAnswer();
-            } else if ((text !== "+" && text !== "-") && isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
-                invalidAnswer();
-            } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
-                wrongAnswer();
-            }
-            break;
+                if (input === generatedTask.missing || (generatedTask.blankIndex === 0 && text === generatedTask.missing)) { // Frage: Stimmt der Input mit dem fehlenden Wert überein?
+                    correctAnswer(correctAnswers, allGivenAnswers, streak, streakVisibleAfterXCorrect, helpcorrect, popupvisible, generatedTask, txt,timeGainPerCorrectAnswer);
+                } else if ((text !== "+" && text !== "-") && isNaN(input)) { // Input ist keine Nummer (parseInt returned "NaN")
+                    invalidAnswer(helpcorrect,popupvisible);
+                } else { // Input ist eine Nummer, aber erfüllt die Gleichung nicht
+                    wrongAnswer(txt, allGivenAnswers, helpcorrect, popupvisible, body);
+                }
+                break;
 
-        case 'restart': // Neustart des Spiels
-            timeRemaining = initialRoundTime;
-            correctAnswers = 0;
-            allGivenAnswers = 0;
-            startTicker();
+            case 'restart': // Neustart des Spiels
+                timeRemaining = initialRoundTime;
+                correctAnswers = 0;
+                allGivenAnswers = 0;
+                startTicker();
 
-            hide(); // Hilfestellung verbergen
-            newTask(); // Neue Aufgabe erstellen
-            changeBackgroundColor(""); // normaler Hintergrund
-            gameScreen.classList.remove("hidden"); // GameScreen anzeigen
-            gameOverScreen.classList.add("hidden"); // GameOverScreen verbergen
-            break;
+                hide(); // Hilfestellung verbergen
+                newTask(generatedTask, txt); // Neue Aufgabe erstellen
+                changeBackgroundColor("", body); // normaler Hintergrund
+                gameScreen.classList.remove("hidden"); // GameScreen anzeigen
+                gameOverScreen.classList.add("hidden"); // GameOverScreen verbergen
+                break;
 
-        case 'skipbtn': // Aufgabe überspringen
-            newTask(); // Neue Aufgabe
-            deductTime(); // Zeitstrafe
-            changeBackgroundColor("incorrect"); // visueller Hinweis (rot)
-            break;
+            case 'skipbtn': // Aufgabe überspringen
+                newTask(generatedTask, txt); // Neue Aufgabe
+                deductTime(); // Zeitstrafe
+                changeBackgroundColor("incorrect", body); // visueller Hinweis (rot)
+                break;
 
-        default:
-            break;
-    }
-});
+            default:
+                break;
+        }
+    });
+}
+
 
 /*
 
@@ -255,22 +268,21 @@ function help() {
 
  */
 
-/**
- * Zeigt das popupfeld im DOM
- */
+
 function show() {
-    if (popupvisible !== true)
-        helpcorrect.classList.toggle("hidden"); // Hinweis wird sichtbar
-    popupvisible = true
+    if (!helpcorrect) {
+        return;
+    }
+
+    helpcorrect.classList.remove("hidden");
 }
 
-/**
- * Versteckt das popupfeld im DOM
- */
 function hide() {
-    if (popupvisible === true)
-        helpcorrect.classList.toggle("hidden"); // Hinweis wird unsichtbar
-    popupvisible = false
+    if (!helpcorrect) {
+        return;
+    }
+
+    helpcorrect.classList.add("hidden");
 }
 
 /**
@@ -355,7 +367,7 @@ function createTask() {
     }
 
     operation = operation === 0 ? "+" : "-";
-    const blank =  getRandomIntInclusive(0, 3) // Auswahl der fehlenden Zahl (Index) via Zufall
+    const blank = getRandomIntInclusive(0, 3) // Auswahl der fehlenden Zahl (Index) via Zufall
     let missing; // Enthält den Wert der fehlenden Zahl
     switch (blank) {
         case 0: // Operator fehlt
