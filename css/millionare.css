@@ -104,34 +104,58 @@ body {
 }
 
 /*---------------Game Over Screen----------*/
-#gameoverScreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(128, 128, 128, 0.9);
-
-    z-index: 9999;
-
-    /* Zentrierung */
-    justify-content: center;
-    align-items: center;
+#gameoverScreen,
+#winningScreen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: rgba(15, 15, 20, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  text-align: center;
 }
 
-#gameoverScreen h1 {
-    font-size: 3rem;
-    margin: 0;
-    color: white;
+
+
+#gameoverScreen h1,
+#winningScreen h1 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 32px 48px;
+  background: #1a1a1f;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gameover-buttons {
+  display: flex;
+  gap: 16px;
 }
 
 .gameover-buttons button {
-    padding: 12px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: #2a2a32;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
+
+.gameover-buttons button:hover {
+  background: #38383f;
+}
+
+
+
 
 
 #jokerCallScreen {
