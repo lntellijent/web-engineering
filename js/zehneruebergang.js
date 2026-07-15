@@ -46,7 +46,7 @@ let interval; // Für das Polling der Zeit zuständig
  */
 
 // Falls kein Spielername eingetragen ist, redirecte auf die Anmeldeseite
-if (!sessionStorage.getItem("playerName"))
+if (sessionStorage.getItem("playerName") === null)
     window.location.pathname = 'web-engineering/html/main.html';
 
 newTask(); // Befüllung von "generatedTask"
@@ -132,7 +132,7 @@ function correctAnswer() {
     streak++;
 
     if (streak >= streakVisibleAfterXCorrect) // Sofern genug Aufgaben hintereinander korrekt gelöst wurden, wird einem die Anzahl korrekter angezeigt.
-        helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse!`; // Ausgabe im DOM
+        helpcorrect.innerHTML = `${streak} Korrekte Antworten. Klasse gemacht ${sessionStorage.getItem("playerName")}!`; // Ausgabe im DOM
     else
         helpcorrect.innerHTML = "Korrekt!"; // Ausgabe im DOM
 }
@@ -353,16 +353,16 @@ function createTask() {
     }
 
     operation = operation === 0 ? "+" : "-";
-    const blank =  getRandomIntInclusive(0, 3) // Auswahl der fehlenden Zahl (Index) via Zufall
+    const blank =  getRandomIntInclusive(1, 3) // Auswahl der fehlenden Zahl (Index) via Zufall
     let missing; // Enthält den Wert der fehlenden Zahl
     switch (blank) {
         case 0: // Operator fehlt
             missing = operation;
             operation = "?";
 
-            txt.placeholder = "+/-";
-            txt.type = "text";
-            txt.pattern = "\[+-\]";
+            txt.setAttribute("placeholder", "+/-");
+            txt.setAttribute("type", "text");
+            txt.setAttribute("pattern", "[+-]");
             break;
         case 1: // linke Zahl fehlt
             missing = leftOperand; // Wert wird für das Ergebnis zwischengespeichert
@@ -378,11 +378,13 @@ function createTask() {
             break;
     }
 
+    /*
     if (blank !== 0) {
-        txt.placeholder = "0-99";
-        txt.type = "number";
-        txt.pattern = "";
+        txt.setAttribute("placeholder", "0-99");
+        txt.setAttribute("type", "number");
+        txt.setAttribute("pattern", "");
     }
+    */
 
     return {
         leftOperand: leftOperand,
