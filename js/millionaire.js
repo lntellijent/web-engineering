@@ -22,66 +22,108 @@ const moneystage = [
 let isJokerFiftyAvailable = true;
 let isJokerCallAvailable = true;
 let isJokerPublicAvailable = true;
-
-
+let jokerAnswer;
 
 
 
 /*-----------Allgemeine Funktionen----------*/
 
+
+function startGame() {
+    stage = 0;  //stage als zustandsstufe um aktuelles geld usw. zu berechnen
+    timeRemaining = 40000;  // 40sek pro Aufgabe
+    hide("#gameoverScreen");
+    hide("#winningScreen")
+    startTicker();
+    resertJokers();
+    startRound();
+}
+
+function hide(identifier) { //fügt die hide classe aus css einer id hinzu
+    document.querySelector(identifier).classList.add("hidden");
+}
+
+function show(identifier) { //zeigt ein objekt wieder an
+    document.querySelector(identifier).classList.remove("hidden");
+}
+
+function saveMillionaerScore(maxMoney) {
+
+    //erstellt einen Eintrag der später im local storage gespeichert wird
+    const entry = {
+        name: sessionStorage.getItem("playerName"),
+        maxMoney: maxMoney,
+        date: new Date().toLocaleDateString("de-DE")
+    };
+
+    let highscores = 
+        JSON.parse(localStorage.getItem("millionaerScores")) || []; //hohlt sich das array aus dem local storage, || [] falls noch kein eintrag soll array leer sein
+
+    highscores.push(entry);  //neuer eintag wird ans ende angehängt
+
+    localStorage.setItem(
+        "millionaerScores",
+        JSON.stringify(highscores)  //speichert den string im localstorage, da dieser nur strings speichern kann
+    );
+}
+
 function getRandomNumber(min, max) {
+    // Generiert eine zufällige Zahl zwischen min und max
     return Math.floor(Math.random() * (max-min+1) + min);
 }
 
 function getRandomBoolean(percent) {
+    //gibt zu einem bestimmten prozentwert true oder false aus
     return Math.random() < percent;
 }
 
 
+/*-----------Ticker----------*/
+
+function startTicker() {
+    clearInterval(interval)
+    document.querySelector("#timer").innerText = `${timeRemaining / 1000}`;
+    interval = setInterval(tick, 100);
+}
+
+function tick() {
+    timeRemaining -= 100;
+    lowerTimerEverySecond()
+}
+
+function lowerTimerEverySecond() {
+    if (timeRemaining >= 0) {
+        if (timeRemaining % 1000 === 0) document.querySelector("#timer").innerText = `${timeRemaining / 1000}`;
+    }
+    else {
+        gameOver()
+    }
+}
+
+
+
+/*-----------Runde----------*/
+
+function startRound() {
+
+    timeRemaining = 40000;
+    if (stage <= 10) {
+        stage +=1;
+        generateQuestion(stage)
+        updateMoney(stage)
+    }
+    else {
+        winGame()
+    }
+} 
 
 /*-----------Aufgabengenerierung----------*/
-function AdditionTask(max) {
-    let num1 = Math.floor(Math.random() * (max + 1));
-    let num2 = Math.floor(Math.random() * (max - num1 + 1));
-    let solution = num1 + num2;
 
-    return [num1, num2, num1 + num2];
-}
-
-function SubtractionTask(max) {
-    let num1 = getRandomNumber(1, max);
-    let num2 = getRandomNumber(0, num1);
-
-    return [num1, num2, num1 - num2];
-}
-
-function MultiplicationTask() {
-    let num1 = getRandomNumber(1, 10);
-    let num2 = getRandomNumber(1, 10);
-
-    return [num1, num2, num1 * num2];
-}
-
-function DivisionTask() {
-    let num2 = getRandomNumber(1, 10);
-    let solution = getRandomNumber(1, 10);
-    let num1 = num2 * solution;
-
-    return [num1, num2, solution];
-}
-
-function masterTask() {
-    let num1 = getRandomNumber(1, 5);
-    let num2 = getRandomNumber(1,5);
-    let num3 = getRandomNumber(2,10);
-    
-    return [num1, num2, num3, num1 + num2 * num3]
-}
 
 function generateQuestion(stage) {
     //Jegliche markierung der Boxen entfernen die durch die Joker entstehen
     for (let i = 1; i <= 4; i++) {
-        document.querySelector("#awnserbox" + i).style.backgroundColor = "";
+        document.querySelector("#awnserbox" + i).style.borderColor = "";
     }
 
     let selector = getRandomNumber(1,2)
@@ -135,6 +177,47 @@ function generateQuestion(stage) {
     }
 }
 
+
+function AdditionTask(max) {
+    let num1 = Math.floor(Math.random() * (max + 1));
+    let num2 = Math.floor(Math.random() * (max - num1 + 1));
+    let solution = num1 + num2;
+
+    return [num1, num2, num1 + num2];
+}
+
+function SubtractionTask(max) {
+    let num1 = getRandomNumber(1, max);
+    let num2 = getRandomNumber(0, num1);
+
+    return [num1, num2, num1 - num2];
+}
+
+function MultiplicationTask() {
+    let num1 = getRandomNumber(1, 10);
+    let num2 = getRandomNumber(1, 10);
+
+    return [num1, num2, num1 * num2];
+}
+
+function DivisionTask() {
+    let num2 = getRandomNumber(1, 10);
+    let solution = getRandomNumber(1, 10);
+    let num1 = num2 * solution;
+
+    return [num1, num2, solution];
+}
+
+function masterTask() {
+    let num1 = getRandomNumber(1, 5);
+    let num2 = getRandomNumber(1,5);
+    let num3 = getRandomNumber(2,10);
+    
+    return [num1, num2, num3, num1 + num2 * num3]
+}
+
+
+
 function fillAwnsers(right) {
     let awk = getRandomNumber(1,4);
     correctButton = awk; /*für den 50:50 joker */
@@ -164,7 +247,35 @@ function fillAwnsers(right) {
     }
 }
 
-let jokerAnswer;
+function checkAnswer(button) {
+    let answer = button.innerText;
+
+    if (Number(answer) === correctAwnser) {
+        startRound();
+    } else {
+        gameOver();
+    }
+}
+
+function updateMoney(stage) {
+    document.querySelector("#moneyfield").textContent = moneystage[stage -1];
+}
+
+
+function winGame() {
+    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
+    show("#winningScreen");
+    saveMillionaerScore("1.000.000 €");
+}
+
+
+function gameOver() {
+    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
+    show("#gameoverScreen");
+    saveMillionaerScore(moneystage[stage -1]);
+}
+
+/*-----------Joker----------*/
 
 function jokerCall() {
     if (isJokerCallAvailable) {
@@ -175,6 +286,8 @@ function jokerCall() {
             jokerAnswer = getRandomNumber(1, 4);
         }
 
+
+        document.querySelector("#awnserbox" + correctButton).style.borderColor = "yellow";
         let answerText = document.querySelector("#awnserbox" + jokerAnswer).innerText;
 
         document.querySelector("#jokerCallText").innerText =
@@ -206,8 +319,8 @@ function jokerFifty() {
         }
         
 
-        document.querySelector("#awnserbox" + correctButton).style.backgroundColor = "yellow";
-        document.querySelector("#awnserbox" + secondButton).style.backgroundColor = "yellow";
+        document.querySelector("#awnserbox" + correctButton).style.borderColor = "yellow";
+        document.querySelector("#awnserbox" + secondButton).style.borderColor = "yellow";
 
         isJokerFiftyAvailable = false;
         hide("#jokerFifty")
@@ -233,6 +346,8 @@ function jokerPublic() {
             }
         }
 
+        document.querySelector("#awnserbox" + correctButton).style.borderColor = "yellow";
+
         votes[3] += 100 - (votes[0] + votes[1] + votes[2] + votes[3]); //fehlende % werden noch draufaddiert
 
         document.querySelector("#publicA").innerText = votes[0];
@@ -247,67 +362,6 @@ function jokerPublic() {
     }
 }
 
-function checkAnswer(button) {
-    let answer = button.innerText;
-
-    if (Number(answer) === correctAwnser) {
-        startRound();
-    } else {
-        gameOver();
-    }
-}
-
-function updateMoney(stage) {
-    document.querySelector("#moneyfield").textContent = moneystage[stage -1];
-}
-
-function startRound() {
-
-    timeRemaining = 40000;
-    if (stage <= 10) {
-        stage +=1;
-        generateQuestion(stage)
-        updateMoney(stage)
-    }
-    else {
-        winGame()
-    }
-} 
-
-
-function startTicker() {
-    clearInterval(interval)
-    document.querySelector("#timer").innerText = `${timeRemaining / 1000}`;
-    interval = setInterval(tick, 100);
-}
-
-function tick() {
-    timeRemaining -= 100;
-    lowerTimerEverySecond()
-}
-
-function lowerTimerEverySecond() {
-    if (timeRemaining >= 0) {
-        if (timeRemaining % 1000 === 0) document.querySelector("#timer").innerText = `${timeRemaining / 1000}`;
-    }
-    else {
-        gameOver()
-    }
-}
-
-function winGame() {
-    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
-    show("#winningScreen");
-    saveMillionaerScore("1.000.000 €");
-}
-
-
-
-function gameOver() {
-    clearInterval(interval);  //sonst gefühlt 1000 highscore einträge
-    show("#gameoverScreen");
-    saveMillionaerScore(moneystage[stage -1]);
-}
 
 function resertJokers() {
     show("#jokerCall")
@@ -318,42 +372,9 @@ function resertJokers() {
     isJokerFiftyAvailable = true;
 }
 
-function startGame() {
-    stage = 0;
-    timeRemaining = 40000;
-    hide("#gameoverScreen");
-    hide("#winningScreen")
-    startTicker();
-    resertJokers();
-    startRound();
-}
 
-function hide(identifier) {
-    document.querySelector(identifier).classList.add("hidden");
-}
 
-function show(identifier) {
-    document.querySelector(identifier).classList.remove("hidden");
-}
 
-function saveMillionaerScore(maxMoney) {
-
-    const entry = {
-        name: sessionStorage.getItem("playerName"),
-        maxMoney: maxMoney,
-        date: new Date().toLocaleDateString("de-DE")
-    };
-
-    let highscores =
-        JSON.parse(localStorage.getItem("millionaerScores")) || [];
-
-    highscores.push(entry);
-
-    localStorage.setItem(
-        "millionaerScores",
-        JSON.stringify(highscores)
-    );
-}
 
 
 // Falls kein Spielername eingetragen ist, redirecte auf die Anmeldeseite
